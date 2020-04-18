@@ -1,0 +1,21 @@
+form{
+    background-color: white;
+    margin-top: 75px;
+}
+legend{
+    text-align: center;
+    font-size: 150%;
+    font-weight: bold;
+}
+#wrapper>*{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+#errorArea{
+    background-color: rgba(255,0,0,0.3);
+    padding: 10px;
+    visibility: hidden;
+}
+#errorArea>div{
+    margin: 5px;
+}

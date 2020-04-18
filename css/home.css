@@ -1,0 +1,15 @@
+.card{
+    background-color: white;
+    padding: 10px;
+    box-sizing: border-box;
+    border: #f6f6f6 10px solid;
+}
+.card>h1{
+    font-size: 120%;
+}
+
+#fixedButton{
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+}

@@ -1,0 +1,10 @@
+body{
+    text-align: center;
+}
+body>div{
+    background-color: white;
+    margin: 10%;
+}
+body>div>*{
+    margin: 10px;
+}

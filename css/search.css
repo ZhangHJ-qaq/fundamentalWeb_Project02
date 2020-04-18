@@ -1,0 +1,45 @@
+form{
+    background-color: white;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+}
+form legend{
+    font-size: 120%;
+    font-weight: bold;
+    text-align: center;
+}
+#searchResultBox{
+    box-sizing: border-box;
+    background-color: white;
+    padding: 10px;
+}
+#controlBox{
+    background-color: white;
+}
+
+.pagination{
+    background-color: white;
+    text-align: center;
+    padding-bottom: 10px;
+}
+.pagination>a{
+    color: black;
+    margin: 3px;
+}
+
+.imageCard{
+    overflow: auto;
+    border: gainsboro 2px solid;
+    padding: 5px;
+}
+
+.imageCard img{
+    float: left;
+}
+.imageCard>h1{
+    margin: 0;
+}
+

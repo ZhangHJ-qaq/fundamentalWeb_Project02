@@ -1,0 +1,21 @@
+#title{
+    text-align: center;
+}
+#panel{
+    background-color: white;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#box>.pure-u-1{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+legend{
+    font-size: 120%;
+    font-weight: bold;
+}
+
+#errorArea{
+    background-color: rgba(255,0,0,0.3);
+}

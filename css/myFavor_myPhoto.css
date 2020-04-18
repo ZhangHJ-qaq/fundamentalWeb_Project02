@@ -1,0 +1,40 @@
+#panel{
+    background-color: white;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#panel>.title{
+    text-align: center;
+}
+
+.imageCard img{
+    float: left;
+    margin-right: 10px;
+}
+.imageCard button{
+    margin-top: 10px;
+}
+
+.imageCard{
+    overflow: auto;
+    padding: 2px;
+    box-sizing: border-box;
+    border: gainsboro solid 2px;
+}
+.pagination{
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.pagination>a{
+    color: black;
+    text-decoration: none;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.imageCard button a{
+    color: white;
+    text-decoration: none;
+}
+

@@ -1,0 +1,11 @@
+#info{
+    background-color: white;
+    font-size: 200%;
+    font-weight: bold;
+    margin-top: 8%;
+    padding: 50px;
+    box-sizing: border-box;
+}
+#info>a{
+    color: rebeccapurple;
+}
