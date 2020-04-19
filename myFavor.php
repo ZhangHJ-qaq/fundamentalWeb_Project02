@@ -2,6 +2,11 @@
 include_once "utilities/PDOAdapter.php";
 include_once "utilities/dbconfig.php";
 include_once "utilities/utilityFunction.php";
+try {
+    $pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
+} catch (PDOException $exception) {
+    header("location:error.php?errorCode=0");
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,11 +56,6 @@ include_once "utilities/utilityFunction.php";
             <div class="pure-u-2-24"></div>
             <div class="box pure-u-20-24">
                 <?php
-                try {
-                    $pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
-                } catch (PDOException $exception) {
-                    header("location:error.php?errorCode=0");
-                }
                 if (isset($_GET['unlikeImageId'])) {//如果用户有取消收藏的请求
                     if (isPositiveNumber($_GET['unlikeImageId'])) {
                         $unlikeImageId = $_GET['unlikeImageId'];
@@ -76,22 +76,24 @@ include_once "utilities/utilityFunction.php";
                 $page = $page >= 1 ? $page : 1;//过滤掉不符合的输入
                 $sql = "select travelimage.ImageID,Title,Description,PATH from travelimagefavor inner join travelimage on travelimage.ImageID=travelimagefavor.ImageID where travelimagefavor.UID=?";
                 $imageArray = $pdoAdapter->selectRows($sql, array($_SESSION['uid']));
-                if (count($imageArray) !== 0) {
+                if (count($imageArray) !== 0) {//得到结果数
                     $counts = count($imageArray);
                     $maxNumOfPage = ceil($counts / 5);
                     $page = $page > $maxNumOfPage ? $maxNumOfPage : $page;
-                    $offset = ($page - 1) * 5;
-                    $sql = "select travelimage.ImageID,Title,Description,PATH from travelimage inner join travelimagefavor on travelimage.ImageID=travelimagefavor.ImageID where travelimagefavor.UID=? limit 5 offset $offset";
+                    $offset = ($page - 1) * 5;//每页显示五张图片
+                    $sql = "select travelimage.ImageID,Title,Description,PATH 
+                    from travelimage inner join travelimagefavor on travelimage.ImageID=travelimagefavor.ImageID 
+                    where travelimagefavor.UID=? limit 5 offset $offset";
                     $imageArray = $pdoAdapter->selectRows($sql, array($_SESSION['uid']));
                     printImage($imageArray);
-                    $needPagination = $maxNumOfPage>1;
+                    $needPagination = $maxNumOfPage > 1;
                 } else {
                     echo "<h2 class='message'>你还没有收藏图片</h2>";
                 }
 
 
                 function printImage($imageArray)
-                {
+                {//打印图片的函数
                     global $page;
                     for ($i = 0; $i <= count($imageArray) - 1; $i++) {
                         $imageID = $imageArray[$i]['ImageID'];
@@ -111,7 +113,8 @@ include_once "utilities/utilityFunction.php";
             </div>
             <div class="pagination pure-u-1">
                 <?php
-                if ($needPagination) {
+                $pdoAdapter->close();
+                if ($needPagination) {//如果需要分页，则打印分页符
                     if ($page != 1) {
                         $previousPage = $page - 1;
                         echo "<a href='myFavor.php?page=$previousPage'>上一页</a>";

@@ -2,7 +2,13 @@
 include_once "utilities/PDOAdapter.php";
 include_once "utilities/dbconfig.php";
 include_once "utilities/utilityFunction.php";
-$pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
+try{
+    $pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
+
+}catch (PDOException $PDOException){
+    header("location:error.php?errorCode=0");
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,12 +54,12 @@ $pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
     ?>
 </header>
 <?php
-if (!customIsEmpty($_GET['deleteID'])) {
-    if (!userHasTheImage($_SESSION['uid'], $_GET['deleteID'])) {
+if (!customIsEmpty($_GET['deleteID'])) {//判断用户是否有给出删除请求
+    if (!userHasTheImage($_SESSION['uid'], $_GET['deleteID'])) {//先判断用户是否有这张图片，如果没有则提示错误
         header("location:error.php?errorCode=12");
         exit();
     }
-    $imagePath = $pdoAdapter->selectRows("select PATH from travelimage where ImageID=?", array($_GET['deleteID']))[0]['PATH'];
+    $imagePath = $pdoAdapter->selectRows("select PATH from travelimage where ImageID=?", array($_GET['deleteID']))[0]['PATH'];//先得到图像的路径，后面在数据库中删除图片要用
     $pdoAdapter->beginTransaction();
     $sql = "delete from travelimage where ImageID=?";
     $resultOfDeleteImage = $pdoAdapter->exec($sql, array($_GET['deleteID']));
@@ -62,10 +68,10 @@ if (!customIsEmpty($_GET['deleteID'])) {
     $resultOfDeleteSmallFile=deleteFile("img/small/$imagePath");
     $resultOfDeleteBigFile=deleteFile("img/large/$imagePath");
 
-    if ($resultOfDeleteFavor && $resultOfDeleteImage && $resultOfDeleteBigFile && $resultOfDeleteSmallFile) {
+    if ($resultOfDeleteFavor && $resultOfDeleteImage && $resultOfDeleteBigFile && $resultOfDeleteSmallFile) {//如果删除记录，删除大小文件都成功
         $message = "删除成功";
         $pdoAdapter->commit();
-    } else {
+    } else {//反之回滚
         $message = "删除失败";
         $pdoAdapter->rollBack();
     }
@@ -100,8 +106,8 @@ function userHasTheImage($uid, $imageID)
                         echo "<a href='imageDetail.php?imageID=$imageID'><img src=img/small/$path class='thumbnail' alt=$title></a>";
                         echo "<h1>$title</h1>";
                         echo "<p>$desc</p>";
-                        echo "<button class='pure-button pure-button-primary' onclick=window.location='upload_edit.php?action=modify&modifyID=$imageID'>修改</button>";
-                        echo "<button class='pure-button pure-button-primary' onclick=window.location='myPhoto.php?deleteID=$imageID'>删除</button>";
+                        echo "<button class='pure-button pure-button-primary' onclick=window.open('upload_edit.php?action=modify&modifyID=$imageID')>修改</button>";
+                        echo "<button class='pure-button pure-button-primary' onclick=window.open('myPhoto.php?deleteID=$imageID')>删除</button>";
                         echo "</div>";
                     }
                 }
@@ -127,6 +133,7 @@ function userHasTheImage($uid, $imageID)
             </div>
             <div class="pagination pure-u-1">
                 <?php
+                $pdoAdapter->close();
                 if ($needPagination) {
                     if ($page != 1) {
                         $previousPage = $page - 1;

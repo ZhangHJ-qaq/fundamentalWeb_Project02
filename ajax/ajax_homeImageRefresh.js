@@ -1,3 +1,4 @@
+//主页页面的刷新
 $(function () {
     $("#refresh").click(function () {
         $.get("ajax/ajax_homeImageRefresh.php")

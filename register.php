@@ -20,15 +20,18 @@ if (isset($_SESSION['username'])) {//如果已登录则跳到主页
     header("location:index.php");
 } else {
     if (!empty($_POST['username']) && (!empty($_POST['password1'])) && (!empty($_POST['password2'])) && (!empty($_POST['email']))) {
-        //如果用户四样都有填写，则开始尝试注册流程，否则啥也不干
+        //如果用户四样都有填写，则开始尝试注册流程
         try {
             $pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
             $purifier = new HTMLPurifier();
             checkInputThenCreateUser();
-
+            $pdoAdapter->close();
         } catch (PDOException $PDOException) {
             header("location:error.php?errorCode=0");
         }
+    } else if (!empty($_POST['username']) || !empty($_POST['password1']) || !empty($_POST['password2']) || !empty($_POST['email'])) {
+        header("location:error.php?errorCode=14");//如果用户填写了至少一样，则提示错误，让用户补全信息，如果用户什么都不填写，重新显示注册页面
+        exit();
     }
 }
 
@@ -40,9 +43,12 @@ function checkInputThenCreateUser()
     $purifiedPassword2 = $purifier->purify($_POST['password2']);
     $purifiedEmail = $purifier->purify($_POST['email']);//净化用户的输入
     if (!($purifiedUsername === $_POST['username'] && $purifiedPassword1 === $_POST['password1'] && $purifiedPassword2 === $_POST['password2'] && $purifiedEmail === $_POST['email'])) {
+        //如果净化后用户的输入和原先的输入不相等
         header("location:error.php?errorCode=0");
         exit();
     }
+
+    //在后端验证用户输入是否符合要求
     if (!preg_match("/^[0-9a-zA-Z]{6,18}$/", $purifiedUsername)) {
         header("location:error.php?errorCode=1");
         exit();
@@ -55,11 +61,14 @@ function checkInputThenCreateUser()
         header("location:error.php?errorCode=3");
         exit();
     }
+
+    //检测用户名是否已经被别人先注册
     if (checkUserExist($purifiedUsername)) {
         header("location:error.php?errorCode=4");
         exit();
     }
 
+    //创建用户，并提示错误与成功
     if (!createUser($purifiedUsername, $purifiedPassword1, $purifiedEmail)) {
         header("location:error.php?errorCode=5");
         exit();
@@ -100,8 +109,8 @@ function createUser($username, $password, $email)
 {
     global $pdoAdapter;
     $dateJoined = date("Y-m-d h:i:sa");
-    $salt = get_hash();
-    $saltedEncryptedPassword = MD5($password . $salt);
+    $salt = get_hash();//随机生成一个盐
+    $saltedEncryptedPassword = MD5($password . $salt);//哈希加盐，将密码存储到数据库
     return $pdoAdapter->insertARow("insert into traveluser (UserName, Email, Pass, State, DateJoined, DateLastModified, salt) VALUES (?,?,?,?,?,?,?)", array($username, $email, $saltedEncryptedPassword, 1, $dateJoined, $dateJoined, $salt));
 }
 

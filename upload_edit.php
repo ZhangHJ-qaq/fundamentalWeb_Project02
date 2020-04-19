@@ -4,6 +4,12 @@ include_once "utilities/dbconfig.php";
 include_once "utilities/htmlpurifier-4.12.0/library/HTMLPurifier.auto.php";
 include_once "utilities/utilityFunction.php";
 include_once "utilities/imagefilter.php";
+try {
+    $pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
+} catch (PDOException $PDOException) {
+    header("location:error.php?errorCode=0");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -56,13 +62,14 @@ include_once "utilities/imagefilter.php";
 </header>
 
 <?php
-$pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
-if (isset($_GET['action']) && $_GET['action'] === 'modify' && !customIsEmpty($_GET['modifyID'])) {
-    if (!userHasTheImage($_SESSION['uid'], $_GET['modifyID'])) {
+//get数组：用户第一次进入这个页面时，判断用户想要修改图片还是上传图片，打印出对应的表单文字
+//post数组：包含用户想要上传还是修改，和上传修改的信息
+if (isset($_GET['action']) && $_GET['action'] === 'modify' && !customIsEmpty($_GET['modifyID'])) {//如果用户通过queryString传来的参数里显示想要修改图片
+    if (!userHasTheImage($_SESSION['uid'], $_GET['modifyID'])) {//判断用户是否有这张图片，如果没有则提示用户不可以修改图片
         header("location:error.php?errorCode=12");
         exit();
     }
-    $action = "modify";
+    $action = "modify";//记录用户通过queryString的请求是修改还是上传，后面输出表单的时候会用
 } else {
     $action = "upload";
 }
@@ -73,19 +80,28 @@ if ($_POST['request'] === 'upload') {//用户请求新上传
     checkUserTextInput();
 
     $processedName = getProcessedFileName($_FILES['imageInput']['name']);
+
+
     //净化用户的输入
     purifyUserInput();
 
     $pdoAdapter->beginTransaction();
-    $resultOfInsertRow = $pdoAdapter->insertARow("insert into travelimage (Title, Description, UID, PATH, ContentID,CityCode,CountryCodeISO) values (?,?,?,?,?,?,?)",
+    $resultOfInsertRow = $pdoAdapter->insertARow("insert into travelimage 
+    (Title, Description, UID, PATH, ContentID,CityCode,CountryCodeISO)
+     values (?,?,?,?,?,?,?)",
         array($_POST['titleInput'], $_POST['descInput'], $_SESSION['uid'], $processedName, $_POST['contentSelect'], $_POST['citySelect'], $_POST['countrySelect']));
-    $resultOfCopy = copy($_FILES['imageInput']['tmp_name'], "img/large/" . $processedName);
+
+    $resultOfCopy = copy($_FILES['imageInput']['tmp_name'], "img/large/" . $processedName);//将图片原封不动地拷贝到大图片的文件夹内
+
+
     $compressedImage = new ImageFilter("img/large/$processedName", array('scaling' => ['size' => "150,150"]), "img/small/$processedName");
-    $resultOfCompress = $compressedImage->outimage();
-    if ($resultOfInsertRow && $resultOfCopy && ($resultOfCompress !== false)) {
+    $resultOfCompress = $compressedImage->outimage();//压缩图片，输出到小图片文件夹
+
+
+    if ($resultOfInsertRow && $resultOfCopy && ($resultOfCompress !== false)) {//如果插入行，拷贝到大图片文件夹，输出到小文件夹都成功
         $pdoAdapter->commit();
         $message = "上传成功!";
-    } else {
+    } else {//否则回滚
         $pdoAdapter->rollBack();
         deleteFile("img/small/$processedName");
         deleteFile("img/large/$processedName");
@@ -98,28 +114,37 @@ if ($_POST['request'] === 'upload') {//用户请求新上传
         checkFileInput();
         checkUserTextInput();
         purifyUserInput();
-        if (!userHasTheImage($_SESSION['uid'], $_POST['modifyID'])) {
+        if (!userHasTheImage($_SESSION['uid'], $_POST['modifyID'])) {//再次检查用户是否有这张图片，如果没有提示错误，不让用户修改
             header("location:error.php?error.php?errorCode=12");
             exit();
         }
+
+        //得到一个文件名
         $processedName = getProcessedFileName($_FILES['imageInput']['name']);
 
+
+        //得到旧图片的文件名
         $previousFileName = $pdoAdapter->selectRows("select PATH from travelimage where ImageID=?", array($_POST['modifyID']))[0]['PATH'];
+
 
         $pdoAdapter->beginTransaction();
         $sql = "update travelimage set Title=?,Description=?,ContentID=?,CountryCodeISO=?,CityCode=?,PATH=? where ImageID=?";
+
         $resultOfUpdate = $pdoAdapter->exec($sql, array($_POST['titleInput'], $_POST['descInput'], $_POST['contentSelect'], $_POST['countrySelect'], $_POST['citySelect'], $processedName, $_POST['modifyID']));
+
         $resultOfCopy = copy($_FILES['imageInput']['tmp_name'], "img/large/" . $processedName);
+
         $compressedImage = new ImageFilter("img/large/$processedName", array('scaling' => ['size' => "150,150"]), "img/small/$processedName");
         $resultOfCompress = $compressedImage->outimage();
-        if ($resultOfCopy && $resultOfUpdate && $resultOfCompress !== false) {
+
+        if ($resultOfCopy && $resultOfUpdate && $resultOfCompress !== false) {//如果三者都成功
             $pdoAdapter->commit();
-            deleteFile("img/large/$previousFileName");
+            deleteFile("img/large/$previousFileName");//删掉数据库里的旧照片
             deleteFile("img/small/$previousFileName");
             $message = "修改成功！";
-        } else {
+        } else {//如果不成功
             $pdoAdapter->rollBack();
-            deleteFile("img/large/$processedName");
+            deleteFile("img/large/$processedName");//删掉数据库里的新照片，此时旧照片不动
             deleteFile("img/small/$processedName");
             $message = "修改成功!";
         }
@@ -144,7 +169,7 @@ if ($_POST['request'] === 'upload') {//用户请求新上传
 
 }
 function getProcessedFileName($originalFileName)
-{
+{//随机得到一个文件名用于新上传的图片
     global $pdoAdapter;
     $extName = getExt($originalFileName);
     while (true) {
@@ -156,10 +181,11 @@ function getProcessedFileName($originalFileName)
     return $processedName;
 }
 
+
 function userHasTheImage($uid, $imageID)
-{
+{//判断用户有没有这张图片
     global $pdoAdapter;
-    $sql = "select imageID from travelimage where UID=? and $imageID=?";
+    $sql = "select imageID from travelimage where UID=? and ImageID=?";
     $count = $pdoAdapter->getRowCount($sql, array($uid, $imageID));
     return $count === 1;
 }
@@ -175,23 +201,23 @@ function purifyUserInput()
 }
 
 function checkFileInput()
-{
-    if ($_FILES['imageInput']['error'] !== 0) {
+{//检查用户的文件上传
+    if ($_FILES['imageInput']['error'] !== 0) {//是否上传成功
         header("location:error.php?errorCode=8");
         exit();
     }
-    if ($_FILES['imageInput']['size'] > 1024 * 1024 * 10) {
+    if ($_FILES['imageInput']['size'] > 1024 * 1024 * 10) {//文件是否过大
         header("location:error.php?errorCode=9");
         exit();
     }
     if ($_FILES['imageInput']['type'] !== "image/png" && $_FILES['imageInput']['type'] !== "image/jpeg" && $_FILES['imageInput']['type'] !== "image/gif") {
         header("location:error.php?errorCode=10");
-        exit();
+        exit();//检查文件类型符不符合要求
     }
 }
 
 function checkUserTextInput()
-{
+{//检测用户输入是否有为空的项目
     if (customIsEmpty($_POST['titleInput']) || customIsEmpty($_POST['descInput']) || customIsEmpty("countrySelect") || customIsEmpty("contentSelect") || customIsEmpty("citySelect")) {
         header("loaction:error.php?errorCode=11");
         exit();
@@ -204,7 +230,7 @@ function checkUserTextInput()
     <main class="pure-u-20-24" id="panel">
         <h1 id="title">
             <?php
-            if ($action === 'modify') {
+            if ($action === 'modify') {//判断用户想要上传还是编辑
                 echo "编辑照片";
             } else {
                 echo "上传照片";
@@ -231,6 +257,7 @@ function checkUserTextInput()
                 ?>
                 <div class="pure-g" id="box">
                     <?php
+                    //这两个input是“隐形”的，功能是在提交表单之后在后端判断用户是上传图片还是修改已有的图片
                     if ($action === 'modify') {
                         echo "<input name='request' value='modify' style='display: none'>";
                         $modifyID = $_GET['modifyID'];
@@ -241,7 +268,7 @@ function checkUserTextInput()
                     ?>
                     <div class="pure-u-1" id="imagePreview">
                         <?php
-                        if ($action === 'modify') {
+                        if ($action === 'modify') {//如果用户修改图片则从数据库中读取图片 生成图片预览
                             $sql = "select Title,Description,ContentID,travelimage.CountryCodeISO,CityCode,PATH,AsciiName from travelimage inner join geocities on CityCode=GeoNameID where ImageID=? and UID=?";
                             $image = $pdoAdapter->selectRows($sql, array($_GET['modifyID'], $_SESSION['uid']));
                             $path = $image[0]['PATH'];
@@ -253,7 +280,7 @@ function checkUserTextInput()
                     <input type="file" name="imageInput" class="pure-u-1" id="imageInput" accept="image/*">
                     <label class="pure-u-1">图片标题</label>
                     <?php
-                    if ($action === "modify") {
+                    if ($action === "modify") {//如果用户是编辑图片，则从数据库中读出原有的数据并填充
                         $title = $image[0]['Title'];
                         echo "<input name='titleInput' id='titleInput' class='pure-u-1' value=$title>";
                     } else {
@@ -262,7 +289,7 @@ function checkUserTextInput()
 
                     ?>
                     <label class="pure-u-1">图片描述</label>
-                    <?php
+                    <?php //如果用户是编辑图片，则从数据库中读出原有的数据并填充
                     if ($action === "modify") {
                         $desc = $image[0]['Description'];
                         echo "<textarea name='descInput' id='descInput' class='pure-u-1'>$desc</textarea>";
@@ -276,6 +303,7 @@ function checkUserTextInput()
                         <div class="wrapper pure-g">
                             <select name="contentSelect" class="pure-u-1-3" id="contentSelect">
                                 <?php
+                                //生成内容的列表
                                 echo "<option value=''>选择主题</option>";
                                 $contentList = $pdoAdapter->selectRows("select ContentID,ContentName from geocontents order by ContentID desc ");
                                 for ($i = 0; $i <= count($contentList) - 1; $i++) {
@@ -296,6 +324,7 @@ function checkUserTextInput()
 
                             <select name="countrySelect" class="pure-u-1-3" id="countrySelect">
                                 <?php
+                                //生成国家的列表
                                 echo "<option value=''>选择国家</option>";
                                 $countryList = $pdoAdapter->selectRows("select ISO,CountryName from geocountries where ISO!=-2");
                                 for ($i = 0; $i <= count($countryList) - 1; $i++) {
@@ -313,6 +342,7 @@ function checkUserTextInput()
                             <select name="citySelect" class="pure-u-1-3" id="citySelect">
                                 <option value=''>选择城市</option>
                                 <?php
+                                //生成城市的下拉
                                 if ($action === 'modify') {
                                     $cityCode = $image[0]['CityCode'];
                                     $AsciiName = $image[0]['AsciiName'];

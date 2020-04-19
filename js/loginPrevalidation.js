@@ -1,3 +1,4 @@
+//验证的在前端检查
 $(function () {
     var usernameInput = $("#usernameInput");
     var passwordInput = $("#passwordInput");

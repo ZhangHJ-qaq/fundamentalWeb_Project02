@@ -1,3 +1,4 @@
+//注册在前端的预先检查
 $(function () {
     var errorArea = $("#errorArea");
     var usernameInput = $("#usernameInput");

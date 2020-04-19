@@ -1,7 +1,13 @@
 <?php
 include_once "utilities/dbconfig.php";
 include_once "utilities/PDOAdapter.php";
-$adapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
+try{
+    $adapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
+
+}catch (PDOException $PDOException){
+    header("location:error.php?errorCode=0");
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,6 +56,7 @@ $adapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
     <div class="pure-u-2-24"></div>
     <div class="pure-u-20-24">
         <?php
+        //从数据库中随机读取一张高清大图展示
         $image = $adapter->selectRows("select Title,PATH,ImageID from travelimage order by rand() limit 1")[0];
         $path = $image['PATH'];
         $title = $image['Title'];
@@ -62,8 +69,15 @@ $adapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
         <div id="wrapper" class="pure-u-24-24">
             <div id="box" class=" pure-g">
                 <?php
-                $sql = "select travelimagefavor.ImageID,Title,Description,PATH,count(travelimagefavor.ImageID) as count from travelimagefavor inner join travelimage on travelimage.ImageID=travelimagefavor.ImageID group by ImageID order by count desc limit 6";
+                //从数据库中读取收藏最多的六张图片并展示
+                $sql = "select travelimagefavor.ImageID,Title,Description,PATH,count(travelimagefavor.ImageID) 
+                        as count 
+                        from travelimagefavor 
+                        inner join travelimage on travelimage.ImageID=travelimagefavor.ImageID 
+                        group by ImageID 
+                        order by count desc limit 6";
                 $imageArray = $adapter->selectRows($sql);
+                $adapter->close();
                 for ($i = 0; $i <= count($imageArray) - 1; $i++) {
                     $imageID = $imageArray[$i]['ImageID'];
                     $title = $imageArray[$i]['Title'];

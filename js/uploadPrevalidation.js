@@ -1,3 +1,4 @@
+//上传照片并在前端预检查
 $(function () {
     var titleInput = $("#titleInput");
     var descInput = $("#descInput");

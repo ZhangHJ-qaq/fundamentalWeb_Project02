@@ -13,21 +13,21 @@
 <?php
 include_once "utilities/PDOAdapter.php";
 include_once "utilities/dbconfig.php";
-if (!empty($_POST['username']) && !empty($_POST['password'])) {
+if (!empty($_POST['username']) && !empty($_POST['password'])) {//如果用户用户名和密码都有输入
     try {
         $pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
         $row = $pdoAdapter->selectRows("select * from traveluser where UserName=?", array($_POST['username']));
-        $uid=$row[0]['UID'];
+        $uid = $row[0]['UID'];
         $correctPassword = $row[0]['Pass'];
         $salt = $row[0]['salt'];
         $calculatedPassword = MD5($_POST['password'] . $salt);
-        if ($calculatedPassword === $correctPassword) {//如果两次密码一致则登陆成功
+        if ($calculatedPassword === $correctPassword) {//如果加盐后的密码和数据库中密码一致则登陆成功
             session_start();
             $_SESSION['username'] = $_POST['username'];
-            $_SESSION['uid']=$uid;
+            $_SESSION['uid'] = $uid;
             header("location:index.php");
             exit();
-        } else {
+        } else {//否则登陆失败，提示用户密码错误
             header("location:error.php?errorCode=6");
             exit();
         }

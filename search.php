@@ -2,6 +2,12 @@
 include_once "utilities/PDOAdapter.php";
 include_once "utilities/dbconfig.php";
 include_once "utilities/utilityFunction.php";
+try {
+    $pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
+} catch (PDOException $PDOException) {
+    header("location:error.php?errorCode=0");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -87,13 +93,12 @@ include_once "utilities/utilityFunction.php";
                 }
             }
 
-            $pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
-            $searchWay = $_GET['searchWay'];
+            $searchWay = $_GET['searchWay'];//得到用户的搜搜方法
             $titleInput = $_GET['titleInput'];
             $descInput = $_GET['descInput'];
             $page = isset($_GET['page']) && isPositiveNumber($_GET['page']) && $_GET['page'] >= 1 ? $_GET['page'] : 1;
             $hasSearched = false;
-            if ($searchWay === 'title') {
+            if ($searchWay === 'title') {//如果用户用标题搜索
                 if (isset($titleInput) && $titleInput !== '') {
                     $sql = "select * from travelimage where Title REGEXP ?";
                     $rowCount = $pdoAdapter->getRowCount($sql, array($titleInput));
@@ -109,7 +114,7 @@ include_once "utilities/utilityFunction.php";
                         $needPagination = $maxNumOfPage > 1;
                     }
                 }
-            } else if ($searchWay === 'desc') {
+            } else if ($searchWay === 'desc') {//如果用户用内容搜索
                 if (isset($descInput) && $descInput !== '') {
                     $sql = "select * from travelimage where Description REGEXP ?";
                     $rowCount = $pdoAdapter->getRowCount($sql, array($descInput));
@@ -130,6 +135,7 @@ include_once "utilities/utilityFunction.php";
         </div>
         <div class="pagination">
             <?php
+            $pdoAdapter->close();
             if ($needPagination) {
                 if ($page != 1) {
                     $previousPage = $page - 1;

@@ -17,8 +17,8 @@ include_once "utilities/PDOAdapter.php";
 <header>
     <?php
     session_start();
-    if(isset($_SESSION['username'])){//如果用户已经登录，则在header的左边打出用户名
-        $uname=$_SESSION['username'];
+    if (isset($_SESSION['username'])) {//如果用户已经登录，则在header的左边打出用户名
+        $uname = $_SESSION['username'];
         echo "<span>$uname</span>";
     }
     ?>
@@ -50,12 +50,20 @@ include_once "utilities/PDOAdapter.php";
             <div class="pure-u-1-2">
                 <?php
                 if (isset($_GET['imageID'])) {
-                    $pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
-                    $sql = "select Title,UserName,Description,AsciiName,path,CountryName,ContentName,ImageID from ((travelimage inner join traveluser on travelimage.UID = traveluser.UID) inner join geocities on geocities.GeoNameID=travelimage.CityCode)
-inner join geocountries on travelimage.CountryCodeISO=geocountries.ISO inner join geocontents on geocontents.ContentID=travelimage.ContentID where ImageID=?";
+                    try {
+                        $pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
+                    } catch (PDOException $exception) {
+                        header("location:error.php?errorCode=0");
+                    }
+                    $sql = "select Title,UserName,Description,AsciiName,path,CountryName,ContentName,ImageID 
+                    from ((travelimage inner join traveluser on travelimage.UID = traveluser.UID) 
+                    inner join geocities on geocities.GeoNameID=travelimage.CityCode)
+                    inner join geocountries on travelimage.CountryCodeISO=geocountries.ISO 
+                    inner join geocontents on geocontents.ContentID=travelimage.ContentID
+                    where ImageID=?";
                     $imageArray = $pdoAdapter->selectRows($sql, array($_GET['imageID']));
-                    $getImage = count($imageArray) === 1;
-                    if ($getImage) {
+                    $getImage = count($imageArray) === 1;//判断是否得到了图像
+                    if ($getImage) {//如果得到图像则输出图像
                         $title = $imageArray[0]['Title'];
                         $username = $imageArray[0]['UserName'];
                         $desc = $imageArray[0]['Description'];
@@ -65,7 +73,7 @@ inner join geocountries on travelimage.CountryCodeISO=geocountries.ISO inner joi
                         $countryName = $imageArray[0]['CountryName'];
                         $imageID = $imageArray[0]['ImageID'];
                         echo "<img src=img/large/$path alt='$title' style='max-width: 100%'>";
-                    } else {
+                    } else {//反之则跳转到错误页提示输入图像不存在
                         header("location:error.php?errorCode=7");
                         exit();
                     }
@@ -74,87 +82,91 @@ inner join geocountries on travelimage.CountryCodeISO=geocountries.ISO inner joi
             </div>
             <div class="pure-u-1-2">
                 <div class="wrapper pure-g">
-                <div class="pure-u-1-6"></div>
-                <div class="pure-u-2-3" id="infoArea">
-                    <?php
-                    if ($getImage) {
-                        function getNumOfFavor($imageID)
-                        {
-                            global $pdoAdapter;
-                            $sql = "select * from travelimagefavor where ImageID=?";
-                            $result = $pdoAdapter->selectRows($sql, array($imageID));
-                            return count($result);
-                        }
+                    <div class="pure-u-1-6"></div>
+                    <div class="pure-u-2-3" id="infoArea">
+                        <?php
+                        if ($getImage) {
+                            function getNumOfFavor($imageID)
+                            {
+                                global $pdoAdapter;
+                                $sql = "select * from travelimagefavor where ImageID=?";
+                                $result = $pdoAdapter->selectRows($sql, array($imageID));
+                                return count($result);
+                            }
 
-                        function userLikedTheImage($uid, $imageID)
-                        {
-                            global $pdoAdapter;
-                            $sql = "select * from travelimagefavor where UID=? and ImageID=?";
-                            $result = $pdoAdapter->selectRows($sql, array($uid, $imageID));
-                            return count($result) !== 0;
-                        }
-                        function doLogicOfLikeAndUnlike(){
-                            global $pdoAdapter;
-                            global $imageID;
-                            global $hasLoggedIn;
-                            if (isset($_GET['like']) && $_GET['like'] === 'true') {//判断用户是否有给出收藏请求
-                                if ($hasLoggedIn) {//如果用户已经登录
-                                    if (userLikedTheImage($_SESSION['uid'], $imageID)) {
-                                        $message = "你已经收藏过这个图片了！";
+                            function userLikedTheImage($uid, $imageID)
+                            {
+                                global $pdoAdapter;
+                                $sql = "select * from travelimagefavor where UID=? and ImageID=?";
+                                $result = $pdoAdapter->selectRows($sql, array($uid, $imageID));
+                                return count($result) !== 0;
+                            }
+
+                            function doLogicOfLikeAndUnlike()
+                            {//收藏和取消收藏的逻辑
+                                global $pdoAdapter;
+                                global $imageID;
+                                global $hasLoggedIn;
+                                if (isset($_GET['like']) && $_GET['like'] === 'true') {//判断用户是否有给出收藏请求
+                                    if ($hasLoggedIn) {//如果用户已经登录
+                                        if (userLikedTheImage($_SESSION['uid'], $imageID)) {
+                                            $message = "你已经收藏过这个图片了！";
+                                        } else {
+                                            $sql = "insert into travelimagefavor (UID, ImageID) VALUES (?,?)";
+                                            $success = $pdoAdapter->insertARow($sql, array($_SESSION['uid'], $imageID));
+                                            $message = $success ? "收藏成功" : "收藏失败";
+                                        }
+
                                     } else {
-                                        $sql="insert into travelimagefavor (UID, ImageID) VALUES (?,?)";
-                                        $success=$pdoAdapter->insertARow($sql,array($_SESSION['uid'],$imageID));
-                                        $message=$success?"收藏成功":"收藏失败";
+                                        $message = "未登录的用户不可以收藏图片";
                                     }
 
-                                } else {
-                                    $message = "未登录的用户不可以收藏图片";
-                                }
+                                } elseif (isset($_GET['unlike']) && $_GET['unlike'] === 'true') {//判断用户是否给出取消收藏请求
+                                    if ($hasLoggedIn) {//如果用户已经登录
+                                        if (!userLikedTheImage($_SESSION['uid'], $imageID)) {
+                                            $message = "你还没有收藏图片，不能取消收藏";
+                                        } else {
+                                            $sql = "delete from travelimagefavor where UID=? and ImageID=?";
+                                            $success = $pdoAdapter->deleteRows($sql, array($_SESSION['uid'], $imageID));
+                                            $message = $success ? "取消收藏成功" : "取消收藏失败";
+                                        }
 
-                            } elseif (isset($_GET['unlike']) && $_GET['unlike'] === 'true') {//判断用户是否给出取消收藏请求
-                                if ($hasLoggedIn) {//如果用户已经登录
-                                    if (!userLikedTheImage($_SESSION['uid'], $imageID)) {
-                                        $message = "你还没有收藏图片，不能取消收藏";
                                     } else {
-                                        $sql="delete from travelimagefavor where UID=? and ImageID=?";
-                                        $success=$pdoAdapter->deleteRows($sql,array($_SESSION['uid'],$imageID));
-                                        $message=$success?"取消收藏成功":"取消收藏失败";
+                                        $message = "未登录的用户不可以取消收藏图片";
                                     }
+                                }
+                                return $message;
+                            }
 
-                                } else {
-                                    $message = "未登录的用户不可以取消收藏图片";
+                            $message = doLogicOfLikeAndUnlike();
+                            echo "<h1 class='pure-u-1'>题目:$title</h1>";
+                            echo "<div class='pure-u-1'>作者:$username</div>";
+                            echo "<div class='pure-u-1'>内容:$content</div>";
+                            echo "<div class='pure-u-1'>城市:$cityName</div>";
+                            echo "<div class='pure-u-1'>国家:$countryName</div>";
+                            echo "<div class='pure-u-1'>描述:$desc</div>";
+
+                            $numOfFavor = getNumOfFavor($_GET['imageID']);
+                            echo "<div class='pure-u-1'>收藏量:$numOfFavor</div>";
+
+                            if (!$hasLoggedIn) {//如果用户没有登录，则提示用户登录以后才能收藏
+                                echo "<button class='pure-u-1 pure-button pure-button-primary'><a class='pure-u-1' href='login.php'>想要收藏这张照片？登录！</a></button>";
+                            } else {
+                                if (userLikedTheImage($_SESSION['uid'], $imageID)) {//如果用户收藏了图片，显示取消收藏的按钮
+                                    echo "<button class='pure-u-1 pure-button pure-button-primary' onclick=window.open('imageDetail.php?imageID=$imageID&unlike=true')>取消收藏</button>";
+                                } else {//反之，显示收藏的按钮
+                                    echo "<button class='pure-u-1 pure-button pure-button-primary' onclick=window.open('imageDetail.php?imageID=$imageID&like=true')>收藏</button>";
                                 }
                             }
-                            return $message;
-                        }
-                        $message=doLogicOfLikeAndUnlike();
-                        echo "<h1 class='pure-u-1'>题目:$title</h1>";
-                        echo "<div class='pure-u-1'>作者:$username</div>";
-                        echo "<div class='pure-u-1'>内容:$content</div>";
-                        echo "<div class='pure-u-1'>城市:$cityName</div>";
-                        echo "<div class='pure-u-1'>国家:$countryName</div>";
-                        echo "<div class='pure-u-1'>描述:$desc</div>";
-
-                        $numOfFavor = getNumOfFavor($_GET['imageID']);
-                        echo "<div class='pure-u-1'>收藏量:$numOfFavor</div>";
-
-                        if(!$hasLoggedIn){
-                            echo "<button class='pure-u-1 pure-button pure-button-primary'><a class='pure-u-1' href='login.php'>想要收藏这张照片？登录！</a></button>";
-                        }else{
-                            if(userLikedTheImage($_SESSION['uid'],$imageID)){
-                                echo "<button class='pure-u-1 pure-button pure-button-primary'><a class='pure-u-1' href=imageDetail.php?imageID=$imageID&unlike=true>取消收藏</a></button>";
-                            }else{
-                                echo "<button class='pure-u-1 pure-button pure-button-primary'><a class='pure-u-1' href=imageDetail.php?imageID=$imageID&like=true>收藏</a></button>";
+                            if (isset($message)) {//如果有信息，则输出
+                                echo "<h2 style='color: red'>$message</h2>";
                             }
-                        }
-                        if(isset($message)){
-                            echo "<h2 style='color: red'>$message</h2>";
-                        }
+                            $pdoAdapter->close();
 
-                    }
-                    ?>
+                        }
+                        ?>
+                    </div>
                 </div>
-            </div>
             </div>
         </div>
     </main>
