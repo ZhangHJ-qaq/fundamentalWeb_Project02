@@ -21,6 +21,7 @@ try{
     <link rel="stylesheet" href="css/universal.css">
     <script src="js/library/jquery-3.4.1.js"></script>
     <script src="ajax/ajax_homeImageRefresh.js"></script>
+    <script src="js/dropdownControl.js"></script>
 </head>
 <body>
 <header>
@@ -61,7 +62,7 @@ try{
         $path = $image['PATH'];
         $title = $image['Title'];
         $imageID = $image['ImageID'];
-        echo "<a class='pure-u-1' href=imageDetail.php?imageID=$imageID>";
+        echo "<a class='pure-u-1 hasShadow' href=imageDetail.php?imageID=$imageID>";
         echo "<img src=img/large/$path alt='$title' class='pure-u-1'>";
         echo "</a>";
         ?>

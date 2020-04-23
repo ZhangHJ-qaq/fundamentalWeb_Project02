@@ -55,7 +55,7 @@ try {
 <div class="wrapper pure-g">
     <div class="pure-u-1-6"></div>
     <main class="pure-u-2-3">
-        <form class="pure-form" method="get" action="search.php" id="searchForm">
+        <form class="pure-form hasShadow" method="get" action="search.php" id="searchForm">
             <fieldset>
                 <legend>搜索</legend>
                 <div class="wrapper pure-g">
@@ -75,7 +75,7 @@ try {
                 </div>
             </fieldset>
         </form>
-        <div id="searchResultBox">
+        <div id="searchResultBox" class="hasShadow">
             <?php
 
             function printSearchResult($imageArray)
@@ -130,6 +130,8 @@ try {
                         $needPagination = $maxNumOfPage > 1;
                     }
                 }
+            }else{
+                echo "<div class='pure-u-1'>你还没有搜索任何内容</div>";
             }
             ?>
         </div>

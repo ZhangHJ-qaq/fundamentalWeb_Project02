@@ -39,9 +39,7 @@ header a{
     display: block;
     padding: 5px;
 }
-#personalCenter:hover #headerDropdownMenu{
-    display: block;
-}
+
 
 
 .thumbnail{
@@ -49,6 +47,10 @@ header a{
     width: 150px;
     height: 150px;
     max-width: 100%;
+    transition: all 0.3s;
+}
+.thumbnail:hover{
+    transform: scale(1.1);
 }
 
 footer{
@@ -56,8 +58,12 @@ footer{
     color: white;
     font-size: 110%;
     padding: 10px;
+    margin-top: 10px;
 }
 footer>a{
     color:white;
 }
 
+.hasShadow{
+    box-shadow: 5px 5px 20px 5px rgba(0,0,0,0.3);
+}

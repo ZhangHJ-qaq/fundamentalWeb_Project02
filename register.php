@@ -118,7 +118,7 @@ function createUser($username, $password, $email)
 ?>
 <body>
 <div class="pure-u-1-6"></div>
-<form class="pure-form pure-u-2-3" method="post" action="register.php">
+<form class="pure-form pure-u-2-3 hasShadow" method="post" action="register.php">
     <fieldset>
         <legend>注册</legend>
         <div class="pure-u-1-4"></div>

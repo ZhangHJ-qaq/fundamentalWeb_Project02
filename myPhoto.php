@@ -20,6 +20,7 @@ try{
     <link rel="stylesheet" href="css/library/pure-release-1.0.1/grids-responsive.css">
     <link rel="stylesheet" href="css/universal.css">
     <link rel="stylesheet" href="css/myFavor_myPhoto.css">
+    <script src="js/dropdownControl.js"></script>
 </head>
 <body>
 <header>
@@ -88,7 +89,7 @@ function userHasTheImage($uid, $imageID)
 ?>
 <div class="wrapper pure-g">
     <div class="pure-u-2-24"></div>
-    <main class="pure-u-20-24" id="panel">
+    <main class="pure-u-20-24 hasShadow" id="panel">
         <h1 class="title">我的照片</h1>
         <div class="wrapper pure-g">
             <div class="pure-u-2-24"></div>

@@ -41,7 +41,7 @@ if (!empty($_POST['username']) && !empty($_POST['password'])) {//如果用户用
 ?>
 <body>
 <div class="pure-u-1-6"></div>
-<form class="pure-form pure-u-2-3" action="login.php" method="post">
+<form class="pure-form pure-u-2-3 hasShadow" action="login.php" method="post">
     <fieldset>
         <legend>登录</legend>
         <div class="pure-u-1-4"></div>

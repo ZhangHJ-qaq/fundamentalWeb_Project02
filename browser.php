@@ -21,6 +21,7 @@ try {
     <link rel="stylesheet" href="css/browser.css">
     <script src="js/library/jquery-3.4.1.js"></script>
     <script src="ajax/ajax_erJiLianDong.js"></script>
+    <script src="js/dropdownControl.js"></script>
 </head>
 <body>
 <header>
@@ -57,7 +58,7 @@ try {
         <div class="wrapper pure-g">
             <div class="pure-u-1-6"></div>
             <div class="pure-u-2-3">
-                <form class="pure-u-1 pure-form" action="browser.php" method="get">
+                <form class="pure-u-1 pure-form hasShadow" action="browser.php" method="get">
                     <fieldset>
                         <legend>搜索</legend>
                         <div class="wrapper pure-g">
@@ -66,7 +67,7 @@ try {
                         </div>
                     </fieldset>
                 </form>
-                <div class="list pure-u-1" id="hotContent">
+                <div class="list pure-u-1 hasShadow" id="hotContent">
                     <div class="pure-g wrapper">
                         <h1 class="pure-u-1">热门主题</h1>
                         <?php
@@ -87,7 +88,7 @@ try {
                     </div>
                 </div>
 
-                <div class="list pure-u-1" id="hotCountry">
+                <div class="list pure-u-1 hasShadow" id="hotCountry">
                     <div class="pure-g wrapper">
                         <h1 class="pure-u-1">热门国家</h1>
                         <?php
@@ -106,7 +107,7 @@ try {
                         ?>
                     </div>
                 </div>
-                <div class="list pure-u-1" id="hotCity">
+                <div class="list pure-u-1 hasShadow" id="hotCity">
                     <div class="wrapper pure-g">
                         <h1 class="pure-u-1">热门城市</h1>
                         <?php
@@ -131,8 +132,8 @@ try {
     <main class="pure-u-24-24 pure-u-md-3-5 pure-u-lg-2-3">
         <div class="pure-g">
             <div class="pure-u-1-6 trick"></div>
-            <div class="pure-u-2-3 pure-u-md-24-24">
-                <form class="pure-form" action="browser.php" method="get">
+            <div class="pure-u-2-3 pure-u-md-22-24">
+                <form class="pure-form hasShadow" action="browser.php" method="get">
                     <fieldset>
                         <legend>过滤</legend>
                         <div class="pure-g">
@@ -169,7 +170,7 @@ try {
                         </div>
                     </fieldset>
                 </form>
-                <div id="box" class="pure-g" style="text-align: center">
+                <div id="box" class="pure-g hasShadow" style="text-align: center">
                     <?php
                     function printImageList($imageList)
                     {//根据从数据库中取得的信息，打印出图片的函数
@@ -187,10 +188,10 @@ try {
                         $sql = "select ImageID,Title,PATH from travelimage WHERE Title REGEXP ?";
                         $count = $pdoAdapter->getRowCount($sql, array($title));//先得到一共有多少符合条件的选项
                         if ($count > 0) {//如果有搜索结果
-                            $maxNumOfPage = ceil($count / 16);//得到有几页
+                            $maxNumOfPage = ceil($count / 12);//得到有几页
                             $page = $page > $maxNumOfPage ? $maxNumOfPage : $page;//如果用户的输入大于最后一页，则自动变成最后一页
-                            $offset = ($page - 1) * 16;
-                            $sql = "select ImageID,Title,PATH from travelimage where Title REGEXP ? limit 16 offset $offset";
+                            $offset = ($page - 1) * 12;
+                            $sql = "select ImageID,Title,PATH from travelimage where Title REGEXP ? limit 12 offset $offset";
                             $imageList = $pdoAdapter->selectRows($sql, array($title));
                             printImageList($imageList);
                             $needPagination = $maxNumOfPage > 1;//如果页面数大于1，则需要分页
@@ -231,16 +232,18 @@ try {
 
                         $count = count($pdoAdapter->selectRows($sql, $bindArray));
                         if ($count > 0) {
-                            $maxNumOfPage = ceil($count / 16);
+                            $maxNumOfPage = ceil($count / 12);
                             $page = $page > $maxNumOfPage ? $maxNumOfPage : $page;
-                            $offset = ($page - 1) * 16;
-                            $sql .= " limit 16 offset $offset";
+                            $offset = ($page - 1) * 12;
+                            $sql .= " limit 12 offset $offset";
                             $imageList = $pdoAdapter->selectRows($sql, $bindArray);
                             printImageList($imageList);
                             $needPagination = $maxNumOfPage > 1;
                         }
 
 
+                    } else{
+                        echo "<div class='pure-u-1'>你还没有搜索图片</div>";
                     }
                     ?>
                     <div class="pagination pure-u-24-24">

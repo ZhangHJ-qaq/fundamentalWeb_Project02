@@ -4,6 +4,7 @@ include_once "utilities/dbconfig.php";
 include_once "utilities/htmlpurifier-4.12.0/library/HTMLPurifier.auto.php";
 include_once "utilities/utilityFunction.php";
 include_once "utilities/imagefilter.php";
+
 try {
     $pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
 } catch (PDOException $PDOException) {
@@ -25,6 +26,7 @@ try {
     <script src="js/uploadImagePreview.js"></script>
     <script src="js/uploadPrevalidation.js"></script>
     <script src="ajax/ajax_erJiLianDong.js"></script>
+    <script src="js/dropdownControl.js"></script>
 </head>
 
 
@@ -227,7 +229,7 @@ function checkUserTextInput()
 ?>
 <div class="wrapper pure-g">
     <div class="pure-u-2-24"></div>
-    <main class="pure-u-20-24" id="panel">
+    <main class="pure-u-20-24 hasShadow" id="panel">
         <h1 id="title">
             <?php
             if ($action === 'modify') {//判断用户想要上传还是编辑
@@ -247,7 +249,6 @@ function checkUserTextInput()
                 echo "<form class='pure-u-20-24 pure-form' action='upload_edit.php' method='post' enctype='multipart/form-data'>";
             }
             ?>
-            <!--            <form class="pure-u-20-24 pure-form" action="upload.php" method="post" enctype="multipart/form-data">-->
             <fieldset>
                 <legend>请填写照片的信息</legend>
                 <?php
