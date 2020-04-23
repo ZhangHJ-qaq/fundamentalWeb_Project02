@@ -21,6 +21,7 @@ try {
     <link rel="stylesheet" href="css/universal.css">
     <link rel="stylesheet" href="css/search.css">
     <script src="js/library/jquery-3.4.1.js"></script>
+    <script src="js/dropdownControl.js"></script>
 </head>
 <body>
 <header>

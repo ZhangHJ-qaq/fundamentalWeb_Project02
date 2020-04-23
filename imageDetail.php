@@ -4,7 +4,7 @@ include_once "utilities/PDOAdapter.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<link>
     <meta charset="UTF-8">
     <title>图片详情</title>
     <link rel="stylesheet" href="css/library/reset.css">
@@ -12,6 +12,7 @@ include_once "utilities/PDOAdapter.php";
     <link rel="stylesheet" href="css/library/pure-release-1.0.1/grids-responsive.css">
     <link rel="stylesheet" href="css/universal.css">
     <link rel="stylesheet" href="css/imageDetail.css">
+    <script src="js/library/jquery-3.4.1.js"></script>
     <script src="js/dropdownControl.js"></script>
 </head>
 <body>
