@@ -11,21 +11,38 @@ function isPositiveNumber($input)
 {
     return preg_match("/^[0-9]+$/", $input);
 }
+
 function getExt($filename)
 {
-    $arr = explode('.',$filename);
+    $arr = explode('.', $filename);
     return array_pop($arr);
 }
 
-function customIsEmpty($s){
-    return $s===null||$s==='';
+function customIsEmpty($s)
+{
+    return $s === null || $s === '';
 }
 
-function deleteFile($path){
-    if(file_exists($path)){
-        $result=unlink($path);
-    }else{
-        $result=true;
+function deleteFile($path)
+{
+    if (file_exists($path)) {
+        $result = unlink($path);
+    } else {
+        $result = true;
     }
     return $result;
+}
+
+
+function purifyPageInput($page, $maxNumOfPage)
+{
+    if ($page <= 0) {
+        $page = 1;
+    } elseif ($page > $maxNumOfPage) {
+        $page = $maxNumOfPage;
+    }
+    if (!isPositiveNumber($page)) {
+        $page = 1;
+    }
+    return $page;
 }
