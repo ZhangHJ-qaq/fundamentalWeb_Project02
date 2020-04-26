@@ -7,7 +7,7 @@ $myPhoto = new MyPhoto();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>我的照片</title>
+    <title>喵喵喵旅游图片分享站-我的照片</title>
     <link rel="stylesheet" href="css/library/reset.css">
     <link rel="stylesheet" href="css/library/pure-release-1.0.1/pure.css">
     <link rel="stylesheet" href="css/library/pure-release-1.0.1/grids-responsive.css">
@@ -36,14 +36,19 @@ $myPhoto->deleteImage($_GET['deleteID']);
             <div class="pure-u-2-24"></div>
             <div class="box pure-u-20-24">
                 <?php
-                $myPhoto->printMessage();
+                //打印出删除照片结果的信息
+                $myPhoto->printDeleteMessage();
+
                 $myPhoto->searchMyPhoto($_SESSION['uid'], $_GET['page']);
                 $myPhoto->printSearchResult();
+
+                //如果用户没有照片，打印出没有照片的提示
                 $myPhoto->printMessageWhileEmpty();
                 ?>
             </div>
             <div class="pagination pure-u-1">
                 <?php
+                $myPhoto->closePDO();
                 $myPhoto->printPagination();
                 ?>
             </div>

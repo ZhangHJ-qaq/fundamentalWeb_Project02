@@ -8,7 +8,7 @@ $upload = new Upload($_GET['action'], $_POST['request']);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>上传照片</title>
+    <title>喵喵喵旅游图片分享站-上传照片</title>
     <link rel="stylesheet" href="css/library/reset.css">
     <link rel="stylesheet" href="css/library/pure-release-1.0.1/pure.css">
     <link rel="stylesheet" href="css/universal.css">
@@ -23,10 +23,12 @@ $upload = new Upload($_GET['action'], $_POST['request']);
 
 
 <?php
+//打印出需要登陆的标题（如果用户不登录会跳转到登录页面）
 $upload->printHeaderNeedLogin();
 ?>
 
 <?php
+//上传/修改的逻辑
 $upload->conductUploadModify();
 
 ?>
@@ -41,6 +43,7 @@ $upload->conductUploadModify();
         <div class="wrapper pure-g">
             <div class="pure-u-2-24"></div>
             <?php
+            //打印出表单的head
             $upload->printFormHead();
             ?>
             <fieldset>
@@ -50,16 +53,19 @@ $upload->conductUploadModify();
                 ?>
                 <div class="pure-g" id="box">
                     <?php
+                    //打印出“隐形”的输入框，用于判断用户是要上传还是修改
                     $upload->printInvisibleInput();
                     ?>
                     <div class="pure-u-1" id="imagePreview">
                         <?php
+                        //如果用户想要修改图片，打印出图片预览
                         $upload->printImage();
                         ?>
                     </div>
                     <input type="file" name="imageInput" class="pure-u-1" id="imageInput" accept="image/*">
                     <label class="pure-u-1">图片标题</label>
                     <?php
+                    //如果编辑，读出原有图片标题并填充
                     $upload->printImageTitle();
                     ?>
                     <label class="pure-u-1">图片描述</label>

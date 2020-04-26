@@ -1,7 +1,7 @@
 <?php
 
 
-class SearchResult
+class SearchResult//搜索结果
 {
     public $imageInfoList;
     public $maxNumOfPage;

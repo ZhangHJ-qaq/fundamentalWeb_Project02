@@ -2,7 +2,7 @@
 include_once "utilities/PDOAdapter.php";
 include_once "utilities/dbconfig.php";
 
-class Page
+class Page//所有页面的基类
 {
     public $pdoAdapter;
 
@@ -16,7 +16,7 @@ class Page
         }
     }
 
-    function printHeaderNoNeedLogin()
+    function printHeaderNoNeedLogin()//打印出不需要登陆的header
     {
         echo "<header>";
         session_start();
@@ -47,7 +47,7 @@ class Page
         return $hasLoggedIn;
     }
 
-    function printHeaderNeedLogin(){
+    function printHeaderNeedLogin(){//打印出需要登陆的header 如果用户不登陆，会被赶去登陆
         echo "<header>";
         session_start();
         if (isset($_SESSION['username'])) {
@@ -81,7 +81,7 @@ class Page
     }
 
     function printContentOptions($defaultContentID = null)
-    {
+    {//打印出内容选择的下拉菜单里所有的option
         echo "<option value='' >选择内容</option>";
         $contentList = $this->pdoAdapter->selectRows("select ContentID,ContentName from geocontents order by ContentID desc ");
         for ($i = 0; $i <= count($contentList) - 1; $i++) {
@@ -97,7 +97,7 @@ class Page
     }
 
     function printCountryOptions($defaultCountryISO = null)
-    {
+    {//打印出国家选择下拉菜单中全部的option
         echo "<option value=''>选择国家</option>";
         $countryList = $this->pdoAdapter->selectRows("select ISO,CountryName from geocountries where ISO!=-2 order by CountryName asc ");
         for ($i = 0; $i <= count($countryList) - 1; $i++) {
@@ -113,7 +113,7 @@ class Page
     }
 
     function closePDO()
-    {
+    {//关闭pdo
         $this->pdoAdapter = null;
     }
 }

@@ -30,7 +30,7 @@ class MyPhoto extends Page implements PageWithPagination
     }
 
 
-    function printMessage()
+    function printDeleteMessage()
     {
         echo "<div class='pure-u-1' style='color: red;font-size: 120%'>$this->message</div>";
     }

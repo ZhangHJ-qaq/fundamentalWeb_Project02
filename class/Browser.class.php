@@ -29,7 +29,7 @@ class Browser extends Page implements PageWithPagination
             $contentID = $hotContentList[$i]['ContentID'];
             echo "<a href='browser.php?content=$contentID' class='pure-u-1'>$contentName</a>";
         }
-    }
+    }//打印热门内容
 
     function printHotCountries()
     {
@@ -43,7 +43,7 @@ class Browser extends Page implements PageWithPagination
             $countryCodeISO = $hotCountryList[$i]['CountryCodeISO'];
             echo "<a href='browser.php?countryISO=$countryCodeISO' class='pure-u-1'>$countryName</a>";
         }
-    }
+    }//打印热门国家
 
     function printHotCities()
     {
@@ -57,10 +57,10 @@ class Browser extends Page implements PageWithPagination
             $cityCode = $hotCityList[$i]['CityCode'];
             echo "<a href='browser.php?cityCode=$cityCode' class='pure-u-1'>$cityName</a>";
         }
-    }
+    }//打印热门城市
 
 
-    function searchByTitle($title, $wantedPage)//搜索页，以标题进行搜索
+    function searchByTitle($title, $wantedPage)//以标题进行搜索
     {
         if (!customIsEmpty($title)) {
             $this->queryStringForPagination = "?title=$title";
@@ -116,23 +116,25 @@ class Browser extends Page implements PageWithPagination
         );
         $this->searchResult = $this->searchRequest->search();
 
-    }
+    }//另一种联动搜索方式
 
 
     function printSearchResult()
     {
         $imageInfoList = $this->searchResult->imageInfoList;
-        if($imageInfoList!==null){
+        if (count($imageInfoList) !== 0) {
             for ($i = 0; $i <= count($imageInfoList) - 1; $i++) {
                 $title = $imageInfoList[$i]['Title'];
                 $imageID = $imageInfoList[$i]['ImageID'];
                 $path = $imageInfoList[$i]['PATH'];
                 echo "<a href='imageDetail.php?imageID=$imageID' class='pure-u-1-2 pure-u-md-1-3 pure-u-lg-1-4'><img src=img/small/$path class='thumbnail' alt=$title></a>";
             }
+        } else {
+            echo "<div class='pure-u-1'>没有找到任何结果</div>";
         }
-    }
+    }//打印搜索结果
 
-    function printPagination()
+    function printPagination()//打印分页
     {
         if (($this->searchResult !== null) && $this->searchResult->needPagination) {
             $currentPage = ($this->searchResult)->currentPage;

@@ -1,7 +1,7 @@
 <?php
 
 
-class UploadedImageInfo
+class UploadedImageInfo//对上传图像的信息的组合
 {
     public $fileArray;
     public $titleInput;

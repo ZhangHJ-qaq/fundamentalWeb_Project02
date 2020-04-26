@@ -47,18 +47,18 @@ class MyFavor extends Page implements PageWithPagination
             }
         }
         // TODO: Implement printPagination() method.
-    }
+    }//打印分页
 
 
     function printUnlikeInfo()
-    {
+    {//打印取消收藏是否成功的信息
         if(!empty($this->unlikeMessage)){
             echo "<div class='pure-u-1' style='color: red'>$this->unlikeMessage</div>";
         }
 
     }
 
-    function unlike($unlikeImageID)
+    function unlike($unlikeImageID)//取消收藏的逻辑
     {
         $this->unlikeMessage = '';
         if (isset($unlikeImageID)) {
@@ -66,7 +66,7 @@ class MyFavor extends Page implements PageWithPagination
         }
     }
 
-    function searchFavoredImage($wantedPage, $uid)
+    function searchFavoredImage($wantedPage, $uid)//搜索我收藏的照片
     {
         $sql = "select travelimage.ImageID,Title,Description,PATH 
                     from travelimage inner join travelimagefavor on travelimage.ImageID=travelimagefavor.ImageID 

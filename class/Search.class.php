@@ -16,7 +16,7 @@ class Search extends Page implements PageWithPagination
     }
 
 
-    function printPagination()
+    function printPagination()//打印分页
     {
         if ($this->searchResult->needPagination) {
             $currentPage = ($this->searchResult)->currentPage;
@@ -45,7 +45,7 @@ class Search extends Page implements PageWithPagination
         // TODO: Implement printPagination() method.
     }
 
-    function searchByTitle($title, $wantedPage)
+    function searchByTitle($title, $wantedPage)//按标题搜索
     {
         if (!customIsEmpty($title)) {
             $this->searchRequest = new SearchRequest(
@@ -61,7 +61,7 @@ class Search extends Page implements PageWithPagination
 
     }
 
-    function searchByDesc($desc,$wantedPage){
+    function searchByDesc($desc,$wantedPage){//按描述搜索
         if (!customIsEmpty($desc)) {
             $this->searchRequest = new SearchRequest(
                 5,
@@ -79,7 +79,7 @@ class Search extends Page implements PageWithPagination
 
 
 
-    function printSearchResult(){
+    function printSearchResult(){//打印搜索结果
         $imageInfoList=$this->searchResult->imageInfoList;
         for ($i = 0; $i <= count($imageInfoList) - 1; $i++) {
             $imageID = $imageInfoList[$i]['ImageID'];

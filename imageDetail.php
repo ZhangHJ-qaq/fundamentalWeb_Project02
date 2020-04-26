@@ -8,7 +8,7 @@ $imageDetail = new ImageDetail();
 <html lang="en">
 <link>
 <meta charset="UTF-8">
-<title>图片详情</title>
+<title>喵喵喵旅游图片分享站-图片详情</title>
 <link rel="stylesheet" href="css/library/reset.css">
 <link rel="stylesheet" href="css/library/pure-release-1.0.1/pure.css">
 <link rel="stylesheet" href="css/library/pure-release-1.0.1/grids-responsive.css">
@@ -27,7 +27,9 @@ $hasLoggedIn = $imageDetail->printHeaderNoNeedLogin();
         <div class="wrapper pure-g">
             <div class="pure-u-1-2">
                 <?php
+                //收藏/取消收藏的逻辑（请求是否合法在user类中完成）
                 $imageDetail->likeUnlike($_GET['imageID'], $_GET['action'], $hasLoggedIn);
+
                 $imageDetail->searchImage($_GET['imageID']);
                 $imageDetail->printBigImage();
                 ?>
@@ -40,6 +42,7 @@ $hasLoggedIn = $imageDetail->printHeaderNoNeedLogin();
 
                         $imageDetail->printImageInfo();
                         $imageDetail->printButtonAndMessage($hasLoggedIn);
+
 
                         ?>
                     </div>

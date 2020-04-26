@@ -17,7 +17,7 @@ class User
         $this->pdoAdapter = $pdoAdapter;
     }
 
-    function hasImage($imageID)
+    function hasImage($imageID)//判断用户是否有这张图片
     {
         $count = $this->pdoAdapter->getRowCount("select ImageID from travelimage where UID=? and ImageID=?", array($this->uid, $imageID));
         if ($count === 1) {
@@ -26,7 +26,7 @@ class User
         return false;
     }
 
-    function deleteImage($deleteID)
+    function deleteImage($deleteID)//删除图片的逻辑
     {
         if ($this->hasImage($deleteID)) {
             $imagePath = $this->pdoAdapter->selectRows("select PATH from travelimage where ImageID=?", array($deleteID))[0]['PATH'];//先得到图像的路径，后面在数据库中删除图片要用
@@ -52,7 +52,7 @@ class User
 
     }
 
-    function modifyImage(UploadedImageInfo $uploadedImageInfo, $modifyID)
+    function modifyImage(UploadedImageInfo $uploadedImageInfo, $modifyID)//修改图片的逻辑
     {
         $message = '';
         $uploadedImageInfo = $this->checkAndPurifyImageInfo($uploadedImageInfo);
@@ -104,7 +104,7 @@ class User
     }
 
 
-    function uploadImage(UploadedImageInfo $uploadedImageInfo)
+    function uploadImage(UploadedImageInfo $uploadedImageInfo)//上传图片的逻辑
     {
         $message = '';
 
@@ -214,14 +214,14 @@ class User
     }
 
 
-    function hasLikedImage($imageID)
+    function hasLikedImage($imageID)//用户是否已经喜欢了这张图片
     {
         $sql = "select * from travelimagefavor where UID=? and ImageID=?";
         $result = $this->pdoAdapter->selectRows($sql, array($this->uid, $imageID));
         return count($result) !== 0;
     }
 
-    function unlikeImage($imageID)
+    function unlikeImage($imageID)//取消收藏的逻辑
     {
         $message = '';
         if (!$this->hasLikedImage($imageID)) {
@@ -234,7 +234,7 @@ class User
         return $message;
     }
 
-    function likeImage($imageID)
+    function likeImage($imageID)//收藏的逻辑
     {
         $message = '';
         if ($this->hasLikedImage($imageID)) {

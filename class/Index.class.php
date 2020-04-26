@@ -11,7 +11,7 @@ class Index extends Page
         //do nothing
     }
 
-    function printSixMostPopularImage()
+    function printSixMostPopularImage()//打印六个最流行的图片
     {
         $sql = "select count(travelimagefavor.ImageID),Title,Description,PATH,travelimage.ImageID from travelimagefavor inner join travelimage on travelimage.ImageID=travelimagefavor.ImageID group by travelimagefavor.ImageID,Title,PATH,Description,travelimagefavor.ImageID order by count(travelimagefavor.ImageID) desc";
         $imageInfoList = $this->pdoAdapter->selectRows($sql);
@@ -44,5 +44,5 @@ class Index extends Page
         echo "<img src=img/large/$path alt='$title' class='pure-u-1'>";
         echo "</a>";
 
-    }
+    }//打印大图
 }

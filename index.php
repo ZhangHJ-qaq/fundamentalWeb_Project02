@@ -34,6 +34,7 @@ $index->printHeaderNoNeedLogin();
             <div id="box" class=" pure-g">
                 <?php
                 $index->printSixMostPopularImage();
+                $index->closePDO();
                 ?>
             </div>
         </div>

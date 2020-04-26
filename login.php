@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>登录</title>
+    <title>喵喵喵旅游图片分享站-登录</title>
     <link rel="stylesheet" href="css/library/reset.css">
     <link rel="stylesheet" href="css/universal.css">
     <link rel="stylesheet" href="css/login_register.css">

@@ -4,7 +4,7 @@ include_once "utilities/PDOAdapter.php";
 include_once "class/SearchRequest.class.php";
 include_once "utilities/utilityFunction.php";
 
-class SearchRequest
+class SearchRequest//搜索请求
 {
     private $numOfElementsOnOnePage;
     private $wantedPage;

@@ -7,7 +7,7 @@ $myFavor = new MyFavor();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>我的收藏</title>
+    <title>喵喵喵旅游图片分享站-我的收藏</title>
     <link rel="stylesheet" href="css/library/reset.css">
     <link rel="stylesheet" href="css/library/pure-release-1.0.1/pure.css">
     <link rel="stylesheet" href="css/universal.css">
@@ -28,16 +28,24 @@ $myFavor->printHeaderNeedLogin();
             <div class="box pure-u-20-24">
                 <?php
 
+                //取消收藏（是否合法的逻辑在user类中完成)
                 $myFavor->unlike($_GET['unlikeImageId']);
+
+                //打印出取消收藏是否成功的结果
                 $myFavor->printUnlikeInfo();
+
+
                 $myFavor->searchFavoredImage($_GET['page'], $_SESSION['uid']);
                 $myFavor->printSearchResult();
+
+                //当用户的照片为空时，打印出空照片的提示
                 $myFavor->printMessageWhileEmpty();
 
                 ?>
             </div>
             <div class="pagination pure-u-1">
                 <?php
+                $myFavor->closePDO();
                 $myFavor->printPagination();
                 ?>
             </div>

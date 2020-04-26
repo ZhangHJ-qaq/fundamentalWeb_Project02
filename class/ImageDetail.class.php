@@ -36,7 +36,7 @@ class ImageDetail extends Page
                 }
             }
         }
-    }
+    }//收藏和取消收藏的逻辑
 
 
     function getNumOfFavor($imageID)
@@ -44,7 +44,7 @@ class ImageDetail extends Page
         $sql = "select * from travelimagefavor where ImageID=?";
         $result = $this->pdoAdapter->selectRows($sql, array($imageID));
         return count($result);
-    }
+    }//得到这张照片的收藏数
 
 
     function searchImage($imageID)
@@ -59,7 +59,7 @@ class ImageDetail extends Page
             $this->imageInfo = $this->pdoAdapter->selectRows($sql, array($imageID));
             $this->getImage = count($this->imageInfo) === 1;
         }
-    }
+    }//搜索图片
 
 
     function imageExist($imageID)
@@ -78,7 +78,7 @@ class ImageDetail extends Page
             exit();
         }
 
-    }
+    }//打印图片
 
     function printImageInfo()
     {
@@ -99,7 +99,7 @@ class ImageDetail extends Page
             echo "<div class='pure-u-1'>描述:$desc</div>";
             echo "<div class='pure-u-1'>收藏量:$numOfFavor</div>";
         }
-    }
+    }//打印图片的信息
 
     function printButtonAndMessage($hasLoggedIn)
     {
@@ -119,7 +119,7 @@ class ImageDetail extends Page
             }
         }
 
-    }
+    }//打印收藏/取消收藏的按钮和收藏/取消收藏的结果信息
 
 
 }
