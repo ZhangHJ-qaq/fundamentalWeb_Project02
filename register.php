@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>喵喵喵旅游图片分享站-注册</title>
+    <title>ZHJ的旅游图片分享站-注册</title>
     <link rel="stylesheet" href="css/library/reset.css">
     <link rel="stylesheet" href="css/universal.css">
     <link rel="stylesheet" href="css/login_register.css">

@@ -37,7 +37,7 @@ class Index extends Page
         $imageInfo = $this->pdoAdapter->selectRows("select Title,PATH,ImageID from travelimage order by rand() limit 1 ");
 
         //->selectRows();
-        $imageID = $imageInfo[0]['imageID'];
+        $imageID = $imageInfo[0]['ImageID'];
         $title = $imageInfo[0]['Title'];
         $path = $imageInfo[0]['PATH'];
         echo "<a class='pure-u-1 hasShadow' href=imageDetail.php?imageID=$imageID>";

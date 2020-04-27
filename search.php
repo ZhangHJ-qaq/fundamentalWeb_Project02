@@ -10,7 +10,7 @@ $search = new Search();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>喵喵喵旅游图片分享站-搜索</title>
+    <title>ZHJ的旅游图片分享站-搜索</title>
     <link rel="stylesheet" href="css/library/reset.css">
     <link rel="stylesheet" href="css/library/pure-release-1.0.1/pure.css">
     <link rel="stylesheet" href="css/library/pure-release-1.0.1/grids-responsive.css">

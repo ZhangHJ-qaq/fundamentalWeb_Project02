@@ -35,6 +35,8 @@ class ImageDetail extends Page
                     $this->message = "未登录的用户不可以取消收藏图片";
                 }
             }
+        }else{
+            $this->message="这张图片不存在";
         }
     }//收藏和取消收藏的逻辑
 

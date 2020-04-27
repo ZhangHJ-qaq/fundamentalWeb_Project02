@@ -237,15 +237,26 @@ class User
     function likeImage($imageID)//收藏的逻辑
     {
         $message = '';
-        if ($this->hasLikedImage($imageID)) {
-            $message = "你已经收藏过这个图片了！";
-        } else {
-            $sql = "insert into travelimagefavor (UID, ImageID) VALUES (?,?)";
-            $success = $this->pdoAdapter->insertARow($sql, array($this->uid, $imageID));
-            $message = $success ? "收藏成功" : "收藏失败";
+        if($this->imageExist($imageID)){
+            if ($this->hasLikedImage($imageID)) {
+                $message = "你已经收藏过这个图片了！";
+            } else {
+                $sql = "insert into travelimagefavor (UID, ImageID) VALUES (?,?)";
+                $success = $this->pdoAdapter->insertARow($sql, array($this->uid, $imageID));
+                $message = $success ? "收藏成功" : "收藏失败";
+            }
+        }else{
+            $message="这个图片不存在";
         }
+
         return $message;
     }
+
+    function imageExist($imageID)
+    {
+        return count($this->pdoAdapter->selectRows("select imageID from travelimage where ImageID=?", array($imageID))) !== 0;
+    }
+
 
 
 }

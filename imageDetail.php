@@ -6,9 +6,9 @@ $imageDetail = new ImageDetail();
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<link>
+<head>
 <meta charset="UTF-8">
-<title>喵喵喵旅游图片分享站-图片详情</title>
+<title>ZHJ的旅游图片分享站-图片详情</title>
 <link rel="stylesheet" href="css/library/reset.css">
 <link rel="stylesheet" href="css/library/pure-release-1.0.1/pure.css">
 <link rel="stylesheet" href="css/library/pure-release-1.0.1/grids-responsive.css">

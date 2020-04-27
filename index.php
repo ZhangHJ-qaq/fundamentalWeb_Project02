@@ -7,7 +7,7 @@ $index = new Index();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>首页</title>
+    <title>ZHJ的旅游图片分享站</title>
     <link rel="stylesheet" href="css/library/reset.css">
     <link rel="stylesheet" href="css/library/pure-release-1.0.1/pure.css">
     <link rel="stylesheet" href="css/library/pure-release-1.0.1/grids-responsive.css">
