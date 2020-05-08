@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>错误</title>
     <link rel="stylesheet" href="css/library/reset.css">
-    <link rel="stylesheet" href="css/library/pure-release-1.0.1/pure.css">
+    <link rel="stylesheet" href="css/library/pure-release-1.0.1/pure-min.css">
     <link rel="stylesheet" href="css/error.css">
 </head>
 <body>

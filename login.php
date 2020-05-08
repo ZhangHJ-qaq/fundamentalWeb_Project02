@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="css/library/reset.css">
     <link rel="stylesheet" href="css/universal.css">
     <link rel="stylesheet" href="css/login_register.css">
-    <link rel="stylesheet" href="css/library/pure-release-1.0.1/pure.css">
+    <link rel="stylesheet" href="css/library/pure-release-1.0.1/pure-min.css">
     <script src="js/library/jquery-3.4.1.js"></script>
     <script src="js/loginPrevalidation.js"></script>
 </head>

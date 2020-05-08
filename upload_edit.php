@@ -10,7 +10,7 @@ $upload = new Upload($_GET['action'], $_POST['request']);
     <meta charset="UTF-8">
     <title>ZHJ的旅游图片分享站-上传照片</title>
     <link rel="stylesheet" href="css/library/reset.css">
-    <link rel="stylesheet" href="css/library/pure-release-1.0.1/pure.css">
+    <link rel="stylesheet" href="css/library/pure-release-1.0.1/pure-min.css">
     <link rel="stylesheet" href="css/universal.css">
     <link rel="stylesheet" href="css/upload.css">
     <script src="js/library/jquery-3.4.1.js"></script>
