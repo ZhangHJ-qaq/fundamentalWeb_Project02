@@ -63,9 +63,9 @@ class MyPhoto extends Page implements PageWithPagination
             echo "<h1>$title</h1>";
             echo "<p>$desc</p>";
             echo "<button class='pure-button pure-button-primary' onclick=window.open('upload_edit.php?action=modify&modifyID=$imageID')>修改</button>";
-
+            $currentPage=$this->searchResult->currentPage;
             echo "<button class='pure-button pure-button-primary'
-            onclick=if(confirm('你真的要删除这张图片吗？删除后这张图片将永远消失，其他用户也不能访问这张图片')){window.open('myPhoto.php?deleteID=$imageID')}>删除</button>";
+            onclick=if(confirm('你真的要删除这张图片吗？删除后这张图片将永远消失，其他用户也不能访问这张图片')){window.open('myPhoto.php?deleteID=$imageID&page=$currentPage')}>删除</button>";
             echo "</div>";
         }
 
