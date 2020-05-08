@@ -93,7 +93,7 @@ class ImageDetail extends Page
             $countryName = $this->imageInfo[0]['CountryName'];
             $imageID = $this->imageInfo[0]['ImageID'];
             $numOfFavor = $this->getNumOfFavor($imageID);
-            echo "<h1 class='pure-u-1'>题目:$title</h1>";
+            echo "<h1 class='pure-u-1'>$title</h1>";
             echo "<div class='pure-u-1'>作者:$username</div>";
             echo "<div class='pure-u-1'>内容:$content</div>";
             echo "<div class='pure-u-1'>城市:$cityName</div>";
