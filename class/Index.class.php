@@ -13,7 +13,7 @@ class Index extends Page
 
     function printSixMostPopularImage()//打印六个最流行的图片
     {
-        $sql = "select count(travelimagefavor.ImageID),Title,Description,PATH,travelimage.ImageID from travelimagefavor inner join travelimage on travelimage.ImageID=travelimagefavor.ImageID group by travelimagefavor.ImageID,Title,PATH,Description,travelimagefavor.ImageID order by count(travelimagefavor.ImageID) desc";
+        $sql = "select count(travelimagefavor.ImageID),Title,Description,PATH,travelimage.ImageID from travelimagefavor inner join travelimage on travelimage.ImageID=travelimagefavor.ImageID group by travelimagefavor.ImageID,Title,PATH,Description,travelimagefavor.ImageID order by count(travelimagefavor.ImageID) desc limit 6";
         $imageInfoList = $this->pdoAdapter->selectRows($sql);
         $this->pdoAdapter->close();
         for ($i = 0; $i <= count($imageInfoList) - 1; $i++) {
