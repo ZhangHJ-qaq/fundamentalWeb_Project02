@@ -25,6 +25,18 @@ $myFavor->printHeaderNeedLogin();
         <h1 class="title">我的收藏</h1>
         <div class="wrapper pure-g">
             <div class="pure-u-2-24"></div>
+            <form class="pure-u-20-24 pure-form" action="myFavor.php">
+                <fieldset>
+                    <legend>搜索</legend>
+                    <div class="pure-g">
+                        <input name="title" type="text" class="pure-u-18-24">
+                        <button type="submit" class="pure-button pure-button-active pure-u-6-24">搜索</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="wrapper pure-g">
+            <div class="pure-u-2-24"></div>
             <div class="box pure-u-20-24">
                 <?php
 
@@ -35,7 +47,7 @@ $myFavor->printHeaderNeedLogin();
                 $myFavor->printUnlikeInfo();
 
 
-                $myFavor->searchFavoredImage($_GET['page'], $_SESSION['uid']);
+                $myFavor->searchFavoredImage($_GET['page'], $_SESSION['uid'], $_GET['title']);
                 $myFavor->printSearchResult();
 
                 //当用户的照片为空时，打印出空照片的提示

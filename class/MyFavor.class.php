@@ -4,6 +4,7 @@ include_once "SearchRequest.class.php";
 include_once "SearchResult.class.php";
 include_once "PageWithPagination.interface.php";
 include_once "User.class.php";
+include_once "utilities/utilityFunction.php";
 
 class MyFavor extends Page implements PageWithPagination
 {
@@ -12,6 +13,7 @@ class MyFavor extends Page implements PageWithPagination
     private $queryStringForPagination;
     private $user;
     private $unlikeMessage;
+    private $searchTitle;
 
     function __construct()
     {
@@ -52,7 +54,7 @@ class MyFavor extends Page implements PageWithPagination
 
     function printUnlikeInfo()
     {//打印取消收藏是否成功的信息
-        if(!empty($this->unlikeMessage)){
+        if (!empty($this->unlikeMessage)) {
             echo "<div class='pure-u-1' style='color: red'>$this->unlikeMessage</div>";
         }
 
@@ -66,20 +68,37 @@ class MyFavor extends Page implements PageWithPagination
         }
     }
 
-    function searchFavoredImage($wantedPage, $uid)//搜索我收藏的照片
+    function searchFavoredImage($wantedPage, $uid, $title)//搜索我收藏的照片
     {
-        $sql = "select travelimage.ImageID,Title,Description,PATH 
+        if (!customIsEmpty($title)) {
+            $sql = "select travelimage.ImageID,Title,Description,PATH 
+                    from travelimage inner join travelimagefavor on travelimage.ImageID=travelimagefavor.ImageID 
+                    where travelimagefavor.UID=? and travelimage.Title regexp ?";
+            $this->searchRequest = new SearchRequest(
+                5,
+                $wantedPage,
+                $this->pdoAdapter,
+                $sql,
+                array($uid, $title)
+            );
+            $this->queryStringForPagination = "?title=$title";
+            $this->searchTitle = $title;
+
+        } else {
+            $sql = "select travelimage.ImageID,Title,Description,PATH 
                     from travelimage inner join travelimagefavor on travelimage.ImageID=travelimagefavor.ImageID 
                     where travelimagefavor.UID=? ";
-        $this->searchRequest = new SearchRequest(
-            5,
-            $wantedPage,
-            $this->pdoAdapter,
-            $sql,
-            array($uid)
-        );
+            $this->searchRequest = new SearchRequest(
+                5,
+                $wantedPage,
+                $this->pdoAdapter,
+                $sql,
+                array($uid)
+            );
+            $this->queryStringForPagination = "?";
+
+        }
         $this->searchResult = $this->searchRequest->search();
-        $this->queryStringForPagination = "?";
     }
 
     function printSearchResult()
@@ -95,7 +114,12 @@ class MyFavor extends Page implements PageWithPagination
             echo "<a href=imageDetail.php?imageID=$imageID><img src=img/small/$path alt=$title class='thumbnail'></a>";
             echo "<h1>$title</h1>";
             echo "<p>$desc</p>";
-            echo "<button class='pure-button-primary pure-button'><a href='myFavor.php?unlikeImageId=$imageID&page=$currentPage'>取消收藏</a></button>";
+            if (!customIsEmpty($this->searchTitle)) {
+                echo "<button class='pure-button-primary pure-button'><a href='myFavor.php?unlikeImageId=$imageID&page=$currentPage&title=$this->searchTitle'>取消收藏</a></button>";
+            } else {
+                echo "<button class='pure-button-primary pure-button'><a href='myFavor.php?unlikeImageId=$imageID&page=$currentPage'>取消收藏</a></button>";
+
+            }
             echo "</div>";
         }
     }

@@ -13,6 +13,7 @@ class MyPhoto extends Page implements PageWithPagination
     private $queryStringForPagination;
     private $message;
     private $user;
+    private $searchTitle;
 
     function __construct()
     {
@@ -36,18 +37,32 @@ class MyPhoto extends Page implements PageWithPagination
     }
 
 
-    function searchMyPhoto($uid, $wantedPage)
+    function searchMyPhoto($uid, $wantedPage, $title)
     {
-        $sql = "select ImageID,Title,Description,PATH from travelimage where UID=?";
-        $this->searchRequest = new SearchRequest(
-            5,
-            $wantedPage,
-            $this->pdoAdapter,
-            $sql,
-            array($uid)
-        );
+        if (customIsEmpty($title)) {
+            $sql = "select ImageID,Title,Description,PATH from travelimage where UID=?";
+            $this->searchRequest = new SearchRequest(
+                5,
+                $wantedPage,
+                $this->pdoAdapter,
+                $sql,
+                array($uid)
+            );
+            $this->queryStringForPagination = "?";
+        } else {
+            $sql = "select ImageID,Title,Description,PATH from travelimage where UID=? and Title regexp ?";
+            $this->searchRequest = new SearchRequest(
+                5,
+                $wantedPage,
+                $this->pdoAdapter,
+                $sql,
+                array($uid, $title)
+            );
+            $this->queryStringForPagination = "?title=$title";
+            $this->searchTitle = $title;
+        }
+
         $this->searchResult = $this->searchRequest->search();
-        $this->queryStringForPagination = "?";
     }
 
     function printSearchResult()
@@ -63,9 +78,16 @@ class MyPhoto extends Page implements PageWithPagination
             echo "<h1>$title</h1>";
             echo "<p>$desc</p>";
             echo "<button class='pure-button pure-button-primary' onclick=window.open('upload_edit.php?action=modify&modifyID=$imageID')>修改</button>";
-            $currentPage=$this->searchResult->currentPage;
-            echo "<button class='pure-button pure-button-primary'
+            $currentPage = $this->searchResult->currentPage;
+            if (!customIsEmpty($this->searchTitle)) {
+                echo "<button class='pure-button pure-button-primary'
+            onclick=if(confirm('你真的要删除这张图片吗？删除后这张图片将永远消失，其他用户也不能访问这张图片')){window.open('myPhoto.php?deleteID=$imageID&page=$currentPage&title=$this->searchTitle')}>删除</button>";
+
+            } else {
+                echo "<button class='pure-button pure-button-primary'
             onclick=if(confirm('你真的要删除这张图片吗？删除后这张图片将永远消失，其他用户也不能访问这张图片')){window.open('myPhoto.php?deleteID=$imageID&page=$currentPage')}>删除</button>";
+
+            }
             echo "</div>";
         }
 
