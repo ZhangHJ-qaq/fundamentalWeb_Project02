@@ -1,3 +1,11 @@
+<?php
+include_once "utilities/PDOAdapter.php";
+include_once "utilities/dbconfig.php";
+include_once "class/Page.class.php";
+include_once "class/Login.php";
+$login = new Login();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,32 +19,9 @@
     <script src="js/loginPrevalidation.js"></script>
 </head>
 <?php
-include_once "utilities/PDOAdapter.php";
-include_once "utilities/dbconfig.php";
-if (!empty($_POST['username']) && !empty($_POST['password'])) {//如果用户用户名和密码都有输入
-    try {
-        $pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
-        $row = $pdoAdapter->selectRows("select * from traveluser where UserName=?", array($_POST['username']));
-        $uid = $row[0]['UID'];
-        $correctPassword = $row[0]['Pass'];
-        $salt = $row[0]['salt'];
-        $calculatedPassword = MD5($_POST['password'] . $salt);
-        if ($calculatedPassword === $correctPassword) {//如果加盐后的密码和数据库中密码一致则登陆成功
-            session_start();
-            $_SESSION['username'] = $_POST['username'];
-            $_SESSION['uid'] = $uid;
-            header("location:index.php");
-            exit();
-        } else {//否则登陆失败，提示用户密码错误
-            header("location:error.php?errorCode=6");
-            exit();
-        }
-    } catch (PDOException $PDOException) {
-        header("location:error.php?errorCode=0");
-        exit();
-    }
 
-}
+$login->tryLogin($_POST['username'], $_POST['password']);
+
 
 ?>
 <body>
@@ -46,6 +31,9 @@ if (!empty($_POST['username']) && !empty($_POST['password'])) {//如果用户用
         <legend>登录</legend>
         <div class="pure-u-1-4"></div>
         <div class="pure-u-1-2" id="wrapper">
+            <?php
+            $login->printMessageIfNotEmpty();
+            ?>
             <label class="pure-u-1">用户名</label>
             <input type="text" name="username" class="pure-u-1" id="usernameInput">
             <label class="pure-u-1">密码</label>

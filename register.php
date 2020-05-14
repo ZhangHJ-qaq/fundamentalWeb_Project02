@@ -77,42 +77,44 @@ function checkInputThenCreateUser()
         exit();
     }
 
+    function checkPassword($password1, $password2)
+    {
+        if ($password1 !== $password2) {
+            return false;
+        } else {
+            if (!preg_match("/^.{6,18}$/", $password1) || preg_match("/^[0-9]{1,}$/", $password1)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
 
-}
+    }
 
-function checkPassword($password1, $password2)
-{
-    if ($password1 !== $password2) {
-        return false;
-    } else {
-        if (!preg_match("/^.{6,18}$/", $password1) || preg_match("/^[0-9]{1,}$/", $password1)) {
+    function checkUserExist($username)
+    {
+        global $pdoAdapter;
+        if ($pdoAdapter->isRowCountZero("select * from traveluser where UserName=?", array($username))) {
             return false;
         } else {
             return true;
         }
+
+    }
+
+    function createUser($username, $password, $email)
+    {
+        global $pdoAdapter;
+        $dateJoined = date("Y-m-d h:i:sa");
+        $salt = get_hash();//随机生成一个盐
+        $saltedEncryptedPassword = MD5($password . $salt);//哈希加盐，将密码存储到数据库
+        $lastTimeTryLogin = time();//获得当前的秒数
+        return $pdoAdapter->insertARow("insert into traveluser (UserName, Email, Pass, State, DateJoined, DateLastModified, salt,LastTimeTryLogin) VALUES (?,?,?,?,?,?,?,?)", array($username, $email, $saltedEncryptedPassword, 1, $dateJoined, $dateJoined, $salt, $lastTimeTryLogin));
     }
 
 }
 
-function checkUserExist($username)
-{
-    global $pdoAdapter;
-    if ($pdoAdapter->isRowCountZero("select * from traveluser where UserName=?", array($username))) {
-        return false;
-    } else {
-        return true;
-    }
 
-}
-
-function createUser($username, $password, $email)
-{
-    global $pdoAdapter;
-    $dateJoined = date("Y-m-d h:i:sa");
-    $salt = get_hash();//随机生成一个盐
-    $saltedEncryptedPassword = MD5($password . $salt);//哈希加盐，将密码存储到数据库
-    return $pdoAdapter->insertARow("insert into traveluser (UserName, Email, Pass, State, DateJoined, DateLastModified, salt) VALUES (?,?,?,?,?,?,?)", array($username, $email, $saltedEncryptedPassword, 1, $dateJoined, $dateJoined, $salt));
-}
 
 
 ?>
