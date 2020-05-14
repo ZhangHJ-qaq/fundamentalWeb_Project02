@@ -10,10 +10,11 @@ $(function () {
             .done(function (data) {
                 var cityList = JSON.parse(data);
                 citySelect.append($("<option value=''>选择城市</option>"));
+                var innerHTML = "";
                 for (var i = 0; i <= cityList.length - 1; i++) {
-                    var option=$("<option></option>").attr({value:cityList[i]['GeoNameID']}).html(cityList[i]['AsciiName']);
-                    citySelect.append(option);
+                    innerHTML += `<option value=${cityList[i]['GeoNameID']}>${cityList[i]['AsciiName']}</option>`;
                 }
+                citySelect.append(innerHTML);
                 citySelect.append($("<option value='-1'>其他城市</option>"))
 
             })
