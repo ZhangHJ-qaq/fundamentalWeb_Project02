@@ -45,3 +45,8 @@ form legend{
     text-decoration: none;
 }
 
+#headerBrowse{
+    font-weight: bold;
+    text-decoration: underline;
+}
+

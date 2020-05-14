@@ -1,69 +1,81 @@
-body{
+body {
     background-color: #f6f6f6;
 }
-header{
-    background-image: linear-gradient(lightskyblue,deepskyblue);
+
+header {
+    background-image: linear-gradient(lightskyblue, deepskyblue);
     font-size: 140%;
     color: white;
     padding: 10px;
     position: relative;
-    font-weight: bold;
 }
-header a{
+
+header a {
     color: white;
     text-decoration: none;
     margin-left: 10px;
     margin-right: 10px;
 }
-#personalCenter{
+
+#personalCenter {
     position: absolute;
     right: 0;
     text-align: right;
     display: inline;
 }
-#login{
+
+#login {
     position: absolute;
     right: 0;
     text-align: right;
     display: inline;
 }
-#headerDropdownMenu{
+
+#headerDropdownMenu {
     position: relative;
-    background-image: linear-gradient(lightskyblue,deepskyblue);
+    background-image: linear-gradient(lightskyblue, deepskyblue);
     top: 10px;
     font-size: 80%;
     display: none;
     font-weight: normal;
 }
-#headerDropdownMenu>a{
+
+#headerDropdownMenu > a {
     display: block;
     padding: 5px;
 }
 
 
-
-.thumbnail{
+.thumbnail {
     object-fit: cover;
     width: 150px;
     height: 150px;
     max-width: 100%;
     transition: all 0.3s;
 }
-.thumbnail:hover{
+
+.thumbnail:hover {
     transform: scale(1.1);
 }
 
-footer{
+footer {
     background: black;
     color: white;
     font-size: 110%;
     padding: 10px;
     margin-top: 10px;
 }
-footer>a{
-    color:white;
+
+footer > a {
+    color: white;
 }
 
-.hasShadow{
-    box-shadow: 5px 5px 20px 5px rgba(0,0,0,0.3);
+.hasShadow {
+    box-shadow: 5px 5px 20px 5px rgba(0, 0, 0, 0.3);
+}
+
+#headerHome:hover, #headerBrowse:hover ,#headerSearch:hover,#headerUpload:hover,
+#headerMyPhoto:hover,#headerMyFavor:hover,#headerLogout:hover
+{
+    color: gainsboro;
 }

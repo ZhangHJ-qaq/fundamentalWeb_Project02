@@ -43,3 +43,8 @@ form legend{
     margin: 0;
 }
 
+#headerSearch{
+    text-decoration: underline;
+    font-weight: bold;
+}
+

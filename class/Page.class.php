@@ -24,18 +24,18 @@ class Page//所有页面的基类
             $uname = $_SESSION['username'];
             echo "<span>$uname</span>";
         }
-        echo " <a href='index.php'>主页</a>";
-        echo "<a href='browser.php'>浏览</a>";
-        echo "<a href='search.php'>搜索</a>";
+        echo " <a href='index.php' id='headerHome'>主页</a>";
+        echo "<a href='browser.php' id='headerBrowse'>浏览</a>";
+        echo "<a href='search.php' id='headerSearch'>搜索</a>";
 
         if (isset($_SESSION['username'])) {
             echo "<div id=\"personalCenter\">
                 个人中心
         <div id=\"headerDropdownMenu\">
-            <a href=\"upload_edit.php\">上传照片</a>
-            <a href=\"myPhoto.php\">我的照片</a>
-            <a href=\"myFavor.php\">我的收藏</a>
-            <a href=\"logout.php\">登出</a>
+            <a href=\"upload_edit.php\" id='headerUpload'>上传照片</a>
+            <a href=\"myPhoto.php\" id='headerMyPhoto'>我的照片</a>
+            <a href=\"myFavor.php\" id='headerMyFavor'>我的收藏</a>
+            <a href=\"logout.php\" id='headerLogout'>登出</a>
         </div>
     </div>";
             $hasLoggedIn = true;
@@ -47,7 +47,8 @@ class Page//所有页面的基类
         return $hasLoggedIn;
     }
 
-    function printHeaderNeedLogin(){//打印出需要登陆的header 如果用户不登陆，会被赶去登陆
+    function printHeaderNeedLogin()
+    {//打印出需要登陆的header 如果用户不登陆，会被赶去登陆
         echo "<header>";
         session_start();
         if (isset($_SESSION['username'])) {
