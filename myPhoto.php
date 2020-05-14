@@ -38,7 +38,9 @@ $myPhoto->deleteImage($_GET['deleteID']);
                 <fieldset>
                     <legend>搜索</legend>
                     <div class="pure-g">
-                        <input name="title" type="text" class="pure-u-18-24">
+                        <?php
+                        $myPhoto->printTitleInput($_GET['title'])
+                        ?>
                         <button type="submit" class="pure-button pure-button-active pure-u-6-24">搜索</button>
                     </div>
                 </fieldset>

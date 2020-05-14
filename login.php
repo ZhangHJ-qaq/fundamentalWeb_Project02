@@ -1,7 +1,4 @@
 <?php
-include_once "utilities/PDOAdapter.php";
-include_once "utilities/dbconfig.php";
-include_once "class/Page.class.php";
 include_once "class/Login.php";
 $login = new Login();
 ?>

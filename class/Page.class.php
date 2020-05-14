@@ -1,6 +1,7 @@
 <?php
 include_once "utilities/PDOAdapter.php";
 include_once "utilities/dbconfig.php";
+include_once "utilities/utilityFunction.php";
 
 class Page//所有页面的基类
 {
@@ -88,11 +89,12 @@ class Page//所有页面的基类
         for ($i = 0; $i <= count($contentList) - 1; $i++) {
             $contentID = $contentList[$i]['ContentID'];
             $contentName = $contentList[$i]['ContentName'];
-            if ($contentID === $defaultContentID) {
+            if ($contentID === $defaultContentID && !customIsEmpty($defaultContentID)) {
                 echo "<option value='$contentID' selected>$contentName</option>";
             } else {
                 echo "<option value=$contentID>$contentName</option>";
             }
+
         }
 
     }
@@ -104,11 +106,13 @@ class Page//所有页面的基类
         for ($i = 0; $i <= count($countryList) - 1; $i++) {
             $ISO = $countryList[$i]['ISO'];
             $countryName = $countryList[$i]['CountryName'];
-            if ($defaultCountryISO === $ISO) {
+            if ($defaultCountryISO === $ISO && !customIsEmpty($defaultCountryISO)) {
                 echo "<option value=$ISO selected>$countryName</option>";
             } else {
                 echo "<option value=$ISO>$countryName</option>";
             }
+
+
         }
 
     }

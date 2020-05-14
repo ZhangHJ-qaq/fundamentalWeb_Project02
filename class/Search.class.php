@@ -55,13 +55,14 @@ class Search extends Page implements PageWithPagination
                 "select ImageID,Title,PATH,Description from travelimage where Title REGEXP ?",
                 array($title)
             );
-            $this->searchResult=$this->searchRequest->search();
-            $this->queryStringForPagination="?searchWay=title&titleInput=$title";
+            $this->searchResult = $this->searchRequest->search();
+            $this->queryStringForPagination = "?searchWay=title&titleInput=$title";
         }
 
     }
 
-    function searchByDesc($desc,$wantedPage){//按描述搜索
+    function searchByDesc($desc, $wantedPage)
+    {//按描述搜索
         if (!customIsEmpty($desc)) {
             $this->searchRequest = new SearchRequest(
                 5,
@@ -70,17 +71,16 @@ class Search extends Page implements PageWithPagination
                 "select ImageID,Title,PATH,Description from travelimage where Description REGEXP ?",
                 array($desc)
             );
-            $this->searchResult=$this->searchRequest->search();
-            $this->queryStringForPagination="?searchWay=desc&descInput=$desc";
+            $this->searchResult = $this->searchRequest->search();
+            $this->queryStringForPagination = "?searchWay=desc&descInput=$desc";
         }
 
     }
 
 
-
-
-    function printSearchResult(){//打印搜索结果
-        $imageInfoList=$this->searchResult->imageInfoList;
+    function printSearchResult()
+    {//打印搜索结果
+        $imageInfoList = $this->searchResult->imageInfoList;
         for ($i = 0; $i <= count($imageInfoList) - 1; $i++) {
             $imageID = $imageInfoList[$i]['ImageID'];
             $title = $imageInfoList[$i]['Title'];
@@ -91,6 +91,39 @@ class Search extends Page implements PageWithPagination
             echo "<h1>$title</h1>";
             echo "<p>$description</p>";
             echo "</div>";
+        }
+    }
+
+    function printSearchByTitle()
+    {
+        if ($_GET['searchWay'] === 'title') {
+            echo "<input type='radio' name='searchWay' value='title' id='titleSearchRadio' checked>";
+        } else {
+            echo "<input type='radio' name='searchWay' value='title' id='titleSearchRadio'>";
+        }
+        echo "<label>按标题搜索</label>";
+        if ($_GET['searchWay'] === 'title') {
+            $titleInput = $_GET['titleInput'];
+            echo "<input type='text' name='titleInput' id='titleInput' value=$titleInput>";
+        } else {
+            echo "<input type='text' name='titleInput' id='titleInput'>";
+        }
+
+    }
+
+    function printSearchByDesc()
+    {
+        if ($_GET['searchWay'] === 'desc') {
+            echo "<input type='radio' name='searchWay' value='desc' id='descSearchRadio' checked>";
+        } else {
+            echo "<input type='radio' name='searchWay' value='desc' id='descSearchRadio'>";
+        }
+        echo "<label>按标题搜索</label>";
+        if ($_GET['searchWay'] === 'desc') {
+            $descInput = $_GET['descInput'];
+            echo "<input type='text' name='descInput' id='descInput' value=$descInput>";
+        } else {
+            echo "<input type='text' name='descInput' id='descInput'>";
         }
     }
 }

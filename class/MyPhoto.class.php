@@ -129,4 +129,12 @@ class MyPhoto extends Page implements PageWithPagination
         }
         // TODO: Implement printPagination() method.
     }
+
+    function printTitleInput($title){
+        if(!customIsEmpty($title)){
+            echo "<input name='title' type='text' class=\"pure-u-18-24\" value='$title'>";
+        }else{
+            echo "<input name='title' type='text' class=\"pure-u-18-24\">";
+        }
+    }
 }

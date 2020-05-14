@@ -33,14 +33,17 @@ $search->printHeaderNoNeedLogin();
                 <legend>搜索</legend>
                 <div class="wrapper pure-g">
                     <div class="pure-u-1 pure-u-md-11-24">
-                        <input type="radio" name="searchWay" value="title" id="titleSearchRatio">
-                        <label>按标题搜索</label>
-                        <input type="text" name="titleInput" id="titleInput">
+                        <?php
+                        $search->printSearchByTitle();
+                        ?>
                     </div>
                     <div class="pure-u-1 pure-u-md-11-24">
-                        <input type="radio" name="searchWay" value="desc" id="descSearchRatio">
-                        <label>按描述搜索</label>
-                        <input type="text" name="descInput" id="descInput">
+<!--                        <input type="radio" name="searchWay" value="desc" id="descSearchRatio">-->
+<!--                        <label>按描述搜索</label>-->
+<!--                        <input type="text" name="descInput" id="descInput">-->
+                        <?php
+                        $search->printSearchByDesc();
+                        ?>
                     </div>
                     <button id="searchButton" type="submit"
                             class="pure-u-1 pure-u-md-2-24 pure-button pure-button-primary">搜索

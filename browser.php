@@ -35,7 +35,10 @@ $browser->printHeaderNoNeedLogin();
                     <fieldset>
                         <legend>搜索</legend>
                         <div class="wrapper pure-g">
-                            <input type="text" class="pure-u-2-3" name="title">
+                            <!--                            <input type="text" class="pure-u-2-3" name="title">-->
+                            <?php
+                            $browser->printTitleInput($_GET['title'])
+                            ?>
                             <button class="pure-button pure-button-primary pure-u-1-3">搜索</button>
                         </div>
                     </fieldset>
@@ -83,19 +86,23 @@ $browser->printHeaderNoNeedLogin();
                             <select class="pure-u-1-4" name='content'>
                                 <?php
                                 //从数据库中读取出内容的条目，加入到下拉菜单中
-                                $browser->printContentOptions();
+                                $browser->printContentOptions($_GET['content']);
                                 ?>
                             </select>
                             <select class="pure-u-1-4" id="countrySelect" name="countryISO">
                                 <?php
                                 //在数据库中读取出全部的国家，输出在下拉菜单中
-                                $browser->printCountryOptions();
+                                $browser->printCountryOptions($_GET['countryISO']);
 
                                 ?>
                             </select>
                             <select class="pure-u-1-4" id="citySelect" name="cityCode">
                                 <!--                               二级联动由js和ajax完成
                                 -->
+                                <?php
+                                $browser->printCityOption($_GET['cityCode']);
+                                ?>
+
                                 <option value=''>选择城市</option>
                             </select>
                             <button type="submit" class="pure-u-1-4 pure-button pure-button-primary">过滤</button>

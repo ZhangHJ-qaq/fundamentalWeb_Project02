@@ -81,30 +81,32 @@ class Browser extends Page implements PageWithPagination
             $sql = "select ImageID,Title,PATH from travelimage where ContentID=? and CountryCodeISO=? and CityCode=?";
             $bindArray = array($content, $countryISO, $cityCode);
             $this->queryStringForPagination = "?content=" . $content . "&countryISO=" . $countryISO . "&cityCode=" . $cityCode;
-        } else if (empty($content) && !empty($countryISO) && !empty($cityCode)) {
+        } else if (customIsEmpty($content) && !customIsEmpty($countryISO) && !customIsEmpty($cityCode)) {
             $sql = "select ImageID,Title,PATH from travelimage where CountryCodeISO=? and CityCode=?";
             $bindArray = array($countryISO, $cityCode);
             $this->queryStringForPagination = "?countryISO=" . $countryISO . "&cityCode=" . $cityCode;
-        } else if (!empty($content) && empty($countryISO) && !empty($cityCode)) {
+        } else if (!customIsEmpty($content) && customIsEmpty($countryISO) && !customIsEmpty($cityCode)) {
             $sql = "select ImageID,Title,PATH from travelimage where ContentID=? and CityCode=?";
             $bindArray = array($content, $cityCode);
             $this->queryStringForPagination = "?content=" . $content . "&cityCode=" . $cityCode;
-        } else if (!empty($content) && !empty($countryISO) && empty($cityCode)) {
+        } else if (!customIsEmpty($content) && !customIsEmpty($countryISO) && customIsEmpty($cityCode)) {
             $sql = "select ImageID,Title,PATH from travelimage where ContentID=? and CountryCodeISO=?";
             $bindArray = array($content, $countryISO);
             $this->queryStringForPagination = "?content=" . $content . "&countryISO=" . $countryISO;
-        } else if (empty($content) && empty($countryISO) && !empty($cityCode)) {
+        } else if (customIsEmpty($content) && customIsEmpty($countryISO) && !customIsEmpty($cityCode)) {
             $sql = "select ImageID,Title,PATH from travelimage where  CityCode=?";
             $bindArray = array($cityCode);
             $this->queryStringForPagination = "?cityCode=" . $cityCode;
-        } else if (empty($content) && !empty($countryISO) && empty($cityCode)) {
+        } else if (customIsEmpty($content) && !customIsEmpty($countryISO) && customIsEmpty($cityCode)) {
             $sql = "select ImageID,Title,PATH from travelimage where CountryCodeISO=?";
             $bindArray = array($countryISO);
             $this->queryStringForPagination = "?countryISO=" . $countryISO;
-        } else if (!empty($content) && empty($countryISO) && empty($cityCode)) {
+        } else if (!customIsEmpty($content) && customIsEmpty($countryISO) && customIsEmpty($cityCode)) {
             $sql = "select ImageID,Title,PATH from travelimage where ContentID=?";
             $bindArray = array($content);
             $this->queryStringForPagination = "?content=" . $content;
+        } else {
+            return;
         }
 
         $this->searchRequest = new SearchRequest(
@@ -160,6 +162,20 @@ class Browser extends Page implements PageWithPagination
                 echo "<a href=$href>下一页</a>";
             }
         }
+    }
+
+    function printCityOption($defaultCityCode)
+    {
+        if (!customIsEmpty($defaultCityCode)) {
+            $cityName = $this->pdoAdapter->selectRows("select AsciiName from geocities where GeoNameID=?", array($defaultCityCode))[0]['AsciiName'];
+            if (!customIsEmpty($cityName)) {//如果根据cityCode得到了cityName
+                echo "<option value=$defaultCityCode selected>$cityName</option>";
+            }
+        }
+    }
+
+    function printTitleInput($title){
+        echo "<input type='text' class='pure-u-2-3' name='title' value=$title>";
     }
 
 

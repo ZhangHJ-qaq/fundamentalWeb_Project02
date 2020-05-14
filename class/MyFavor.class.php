@@ -130,4 +130,13 @@ class MyFavor extends Page implements PageWithPagination
             echo "<div class='pure-u-1'>找不到你收藏过的任何图片</div>";
         }
     }
+
+    function printTitleInput($title)
+    {
+        if (!customIsEmpty($title)) {
+            echo "<input name='title' type='text' class=\"pure-u-18-24\" value='$title'>";
+        } else {
+            echo "<input name='title' type='text' class=\"pure-u-18-24\">";
+        }
+    }
 }
