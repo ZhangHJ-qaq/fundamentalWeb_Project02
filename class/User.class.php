@@ -56,6 +56,10 @@ class User
     {
         $message = '';
         $uploadedImageInfo = $this->checkAndPurifyImageInfo($uploadedImageInfo);
+        if ($uploadedImageInfo === false) {
+            $message = "图片的信息填写不完整或部分信息不合法。请整改再尝试上传";
+            return $message;
+        }
         if (!$this->hasImage($modifyID)) {
             $message = "编辑失败。你还没有这张图片，不可以编辑，建议尝试直接上传图片。";
             return $message;
@@ -63,13 +67,18 @@ class User
 
         $photoChanged = !customIsEmpty($uploadedImageInfo->fileArray['name']);
         if ($photoChanged) {//如果用户此次上传操作改变了图片内容
+            $fileErrorInfo = $this->checkFileInput($uploadedImageInfo->fileArray);
+            if ($fileErrorInfo !== false) {
+                return $fileErrorInfo;
+            }
+
             $originalFileName = $this->pdoAdapter->selectRows("select PATH from travelimage where ImageID=?", array($modifyID))[0]['PATH'];
             $newFileName = $this->getUnusedFileName($uploadedImageInfo);
 
             $this->pdoAdapter->beginTransaction();
             $sql = "update travelimage set Title=?,Description=?,ContentID=?,CountryCodeISO=?,CityCode=?,PATH=? where ImageID=?";
 
-            $resultOfUpdate = $this->pdoAdapter->exec($sql, array($_POST['titleInput'], $_POST['descInput'], $_POST['contentSelect'], $_POST['countrySelect'], $_POST['citySelect'], $newFileName, $_POST['modifyID']));
+            $resultOfUpdate = $this->pdoAdapter->exec($sql, array($uploadedImageInfo->titleInput, $uploadedImageInfo->descInput, $uploadedImageInfo->contentSelect, $uploadedImageInfo->countrySelect, $uploadedImageInfo->citySelect, $newFileName, $modifyID));
 
             $resultOfCopy = copy($_FILES['imageInput']['tmp_name'], "img/large/" . $newFileName);
 
@@ -91,7 +100,7 @@ class User
         } elseif (!$photoChanged) {
 
             $sql = "update travelimage set Title=?,Description=?,ContentID=?,CountryCodeISO=?,CityCode=? where ImageID=?";
-            $resultOfUpdate = $this->pdoAdapter->exec($sql, array($_POST['titleInput'], $_POST['descInput'], $_POST['contentSelect'], $_POST['countrySelect'], $_POST['citySelect'], $_POST['modifyID']));
+            $resultOfUpdate = $this->pdoAdapter->exec($sql, array($uploadedImageInfo->titleInput, $uploadedImageInfo->descInput, $uploadedImageInfo->contentSelect, $uploadedImageInfo->countrySelect, $uploadedImageInfo->citySelect, $modifyID));
             if ($resultOfUpdate) {
                 $message = "修改成功";
             } else {
@@ -109,7 +118,15 @@ class User
         $message = '';
 
         $uploadedImageInfo = $this->checkAndPurifyImageInfo($uploadedImageInfo);
-        $this->checkFileInput($uploadedImageInfo->fileArray);
+        if ($uploadedImageInfo === false) {
+            $message = "图片的信息填写不完整或部分信息不合法。请整改再尝试上传";
+            return $message;
+        }
+
+        $fileErrorInfo = $this->checkFileInput($uploadedImageInfo->fileArray);
+        if ($fileErrorInfo !== false) {
+            return $fileErrorInfo;
+        }
 
         $imageID = $this->getUnusedImageID();
         $newFileName = $this->getUnusedFileName($uploadedImageInfo);
@@ -151,15 +168,27 @@ class User
             customIsEmpty($uploadedImageInfo->countrySelect) ||
             customIsEmpty($uploadedImageInfo->contentSelect)
         ) {
-            header("location:error.php?errorCode=11");
-            exit();
-        }
+            return false;
+        }//检测每个信息是否为空
         $purifier = new HTMLPurifier();
         $uploadedImageInfo->titleInput = $purifier->purify($uploadedImageInfo->titleInput);
         $uploadedImageInfo->descInput = $purifier->purify($uploadedImageInfo->descInput);
         $uploadedImageInfo->contentSelect = $purifier->purify($uploadedImageInfo->contentSelect);
         $uploadedImageInfo->citySelect = $purifier->purify($uploadedImageInfo->citySelect);
         $uploadedImageInfo->countrySelect = $purifier->purify($uploadedImageInfo->countrySelect);
+
+        $sql = "select ContentID from geocontents where ContentID=?";//在后台检测用户从前端发来的内容，城市，和国家的选项是否合法
+        if ($this->pdoAdapter->isRowCountZero($sql, array($uploadedImageInfo->contentSelect))) {
+            return false;
+        }
+        $sql = "select ISO from geocountries where ISO=?";
+        if ($this->pdoAdapter->isRowCountZero($sql, array($uploadedImageInfo->countrySelect))) {
+            return false;
+        }
+        $sql = "select GeoNameID from geocities where GeoNameID=?";
+        if ($this->pdoAdapter->isRowCountZero($sql, array($uploadedImageInfo->citySelect))) {
+            return false;
+        }
 
         return $uploadedImageInfo;
 
@@ -168,17 +197,15 @@ class User
     function checkFileInput(array $fileInput)
     {
         if ($fileInput['error'] !== 0) {//是否上传成功
-            header("location:error.php?errorCode=8");
-            exit();
+            return "文件上传失败，请重试";
         }
         if ($fileInput['size'] > 1024 * 1024 * 10) {//文件是否过大
-            header("location:error.php?errorCode=9");
-            exit();
+            return "文件尺寸过大。最多只能上传10MB的图片";
         }
         if ($fileInput['type'] !== "image/png" && $_FILES['imageInput']['type'] !== "image/jpeg" && $_FILES['imageInput']['type'] !== "image/gif") {
-            header("location:error.php?errorCode=10");
-            exit();//检查文件类型符不符合要求
+            return "文件格式不符合要求。只支持png，jpg，jpeg和gif格式的图片";
         }
+        return false;
     }
 
     function getUnusedImageID()
@@ -237,7 +264,7 @@ class User
     function likeImage($imageID)//收藏的逻辑
     {
         $message = '';
-        if($this->imageExist($imageID)){
+        if ($this->imageExist($imageID)) {
             if ($this->hasLikedImage($imageID)) {
                 $message = "你已经收藏过这个图片了！";
             } else {
@@ -245,8 +272,8 @@ class User
                 $success = $this->pdoAdapter->insertARow($sql, array($this->uid, $imageID));
                 $message = $success ? "收藏成功" : "收藏失败";
             }
-        }else{
-            $message="这个图片不存在";
+        } else {
+            $message = "这个图片不存在";
         }
 
         return $message;
@@ -256,7 +283,6 @@ class User
     {
         return count($this->pdoAdapter->selectRows("select imageID from travelimage where ImageID=?", array($imageID))) !== 0;
     }
-
 
 
 }

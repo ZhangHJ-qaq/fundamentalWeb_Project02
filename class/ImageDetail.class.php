@@ -76,7 +76,7 @@ class ImageDetail extends Page
             $title = $this->imageInfo[0]['Title'];
             echo "<img src=img/large/$path alt='$title' style='max-width: 100%'>";
         } else {
-            header("location:error.php?errorCode=7");
+            echo "<div style='font-size: 110%;color: red'>错误:你请求的这个图片不存在</div>";
             exit();
         }
 

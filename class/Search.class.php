@@ -25,21 +25,26 @@ class Search extends Page implements PageWithPagination
             if ($currentPage > 1) {
                 $previousPage = $currentPage - 1;
                 $href = "search.php" . $this->queryStringForPagination . "&page=$previousPage";
-                echo "<a href=$href>上一页</a>";
+                echo "<a href='$href'>上一页</a>";
             }
-            for ($i = 1; $i <= $maxNumOfPage; $i++) {
+
+            $startPage = max(1, $currentPage - 5);
+            $endPage = min($maxNumOfPage, $currentPage + 4);
+
+
+            for ($i = $startPage; $i <= $endPage; $i++) {
                 if ($currentPage == $i) {
                     $href = "search.php" . $this->queryStringForPagination . "&page=$i";
-                    echo "<a href=$href style='color: red'>$i</a>";
+                    echo "<a href='$href' style='color: red'>$i</a>";
                 } else {
                     $href = "search.php" . $this->queryStringForPagination . "&page=$i";
-                    echo "<a href=$href >$i</a>";
+                    echo "<a href='$href' >$i</a>";
                 }
             }
             if ($currentPage < $maxNumOfPage) {
                 $nextPage = $currentPage + 1;
                 $href = "search.php" . $this->queryStringForPagination . "&page=$nextPage";
-                echo "<a href=$href>下一页</a>";
+                echo "<a href='$href'>下一页</a>";
             }
         }
         // TODO: Implement printPagination() method.
@@ -81,17 +86,22 @@ class Search extends Page implements PageWithPagination
     function printSearchResult()
     {//打印搜索结果
         $imageInfoList = $this->searchResult->imageInfoList;
-        for ($i = 0; $i <= count($imageInfoList) - 1; $i++) {
-            $imageID = $imageInfoList[$i]['ImageID'];
-            $title = $imageInfoList[$i]['Title'];
-            $description = $imageInfoList[$i]['Description'];
-            $path = $imageInfoList[$i]['PATH'];
-            echo "<div class='imageCard'>";
-            echo "<a href=imageDetail.php?imageID=$imageID><img src=img/small/$path class='thumbnail' alt=$title></a>";
-            echo "<h1>$title</h1>";
-            echo "<p>$description</p>";
-            echo "</div>";
+        if ($imageInfoList !== null && count($imageInfoList) !== 0) {
+            for ($i = 0; $i <= count($imageInfoList) - 1; $i++) {
+                $imageID = $imageInfoList[$i]['ImageID'];
+                $title = $imageInfoList[$i]['Title'];
+                $description = $imageInfoList[$i]['Description'];
+                $path = $imageInfoList[$i]['PATH'];
+                echo "<div class='imageCard'>";
+                echo "<a href=imageDetail.php?imageID=$imageID><img src=img/small/$path class='thumbnail' alt=$title></a>";
+                echo "<h1>$title</h1>";
+                echo "<p>$description</p>";
+                echo "</div>";
+            }
+        } else {
+            echo "<div>没有搜索到任何内容</div>";
         }
+
     }
 
     function printSearchByTitle()
@@ -118,7 +128,7 @@ class Search extends Page implements PageWithPagination
         } else {
             echo "<input type='radio' name='searchWay' value='desc' id='descSearchRadio'>";
         }
-        echo "<label>按标题搜索</label>";
+        echo "<label>按内容搜索</label>";
         if ($_GET['searchWay'] === 'desc') {
             $descInput = $_GET['descInput'];
             echo "<input type='text' name='descInput' id='descInput' value=$descInput>";

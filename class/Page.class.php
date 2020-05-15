@@ -12,7 +12,6 @@ class Page//所有页面的基类
         try {
             $this->pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
         } catch (PDOException $exception) {
-            header("location:error.php?errorCode=0");
             exit();
         }
     }

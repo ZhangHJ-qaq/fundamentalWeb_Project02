@@ -7,5 +7,5 @@ try {
 limit 6");
     echo json_encode($imageArray);
 }catch (PDOException $PDOException){
-    header("location:../error.php?errorCode=0;");
+
 }

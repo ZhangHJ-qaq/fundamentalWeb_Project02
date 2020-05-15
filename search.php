@@ -38,9 +38,6 @@ $search->printHeaderNoNeedLogin();
                         ?>
                     </div>
                     <div class="pure-u-1 pure-u-md-11-24">
-<!--                        <input type="radio" name="searchWay" value="desc" id="descSearchRatio">-->
-<!--                        <label>按描述搜索</label>-->
-<!--                        <input type="text" name="descInput" id="descInput">-->
                         <?php
                         $search->printSearchByDesc();
                         ?>

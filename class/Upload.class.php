@@ -32,6 +32,7 @@ class Upload extends Page
         $this->user = new User($_SESSION['uid'], $this->pdoAdapter);
         $this->modifyID = $_POST['modifyID'];
         $this->purifyControlForDisplay();
+
     }
 
     function purifyControlForDisplay()
@@ -39,7 +40,7 @@ class Upload extends Page
         if ($this->controlForDisplay !== "modify") {
             $this->controlForDisplay = "upload";
         }
-        if($this->controlForDisplay==='modify'&&!$this->imageExist($_GET['modifyID'])){
+        if ($this->controlForDisplay === 'modify' && !$this->imageExist($_GET['modifyID'])) {
             $this->controlForDisplay = "upload";
         }
     }
@@ -138,6 +139,15 @@ class Upload extends Page
             $AsciiName = $this->originalImageInfo['AsciiName'];
             echo "<option value='$cityCode' selected>$AsciiName</option>";
         }
+    }
+
+    function jumpToUploadIfUserNotHaveImage()
+    {
+        if ($this->controlForDisplay === 'modify' && !$this->user->hasImage($_GET['modifyID'])) {
+            $this->controlForDisplay = "upload";
+            $this->message = "你还没有这张图片。已为你自动跳转到上传页面";
+        }
+
     }
 
 

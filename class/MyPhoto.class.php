@@ -68,28 +68,31 @@ class MyPhoto extends Page implements PageWithPagination
     function printSearchResult()
     {
         $imageInfoList = $this->searchResult->imageInfoList;
-        for ($i = 0; $i <= count($imageInfoList) - 1; $i++) {
-            $title = $imageInfoList[$i]['Title'];
-            $imageID = $imageInfoList[$i]['ImageID'];
-            $desc = $imageInfoList[$i]['Description'];
-            $path = $imageInfoList[$i]['PATH'];
-            echo "<div class='imageCard'>";
-            echo "<a href='imageDetail.php?imageID=$imageID'><img src=img/small/$path class='thumbnail' alt=$title></a>";
-            echo "<h1>$title</h1>";
-            echo "<p>$desc</p>";
-            echo "<button class='pure-button pure-button-primary' onclick=window.open('upload_edit.php?action=modify&modifyID=$imageID')>修改</button>";
-            $currentPage = $this->searchResult->currentPage;
-            if (!customIsEmpty($this->searchTitle)) {
-                echo "<button class='pure-button pure-button-primary'
+        if ($imageInfoList !== null && count($imageInfoList) !== 0) {
+            for ($i = 0; $i <= count($imageInfoList) - 1; $i++) {
+                $title = $imageInfoList[$i]['Title'];
+                $imageID = $imageInfoList[$i]['ImageID'];
+                $desc = $imageInfoList[$i]['Description'];
+                $path = $imageInfoList[$i]['PATH'];
+                echo "<div class='imageCard'>";
+                echo "<a href='imageDetail.php?imageID=$imageID'><img src=img/small/$path class='thumbnail' alt=$title></a>";
+                echo "<h1>$title</h1>";
+                echo "<p>$desc</p>";
+                echo "<button class='pure-button pure-button-primary' onclick=window.open('upload_edit.php?action=modify&modifyID=$imageID')>修改</button>";
+                $currentPage = $this->searchResult->currentPage;
+                if (!customIsEmpty($this->searchTitle)) {
+                    echo "<button class='pure-button pure-button-primary'
             onclick=if(confirm('你真的要删除这张图片吗？删除后这张图片将永远消失，其他用户也不能访问这张图片')){window.open('myPhoto.php?deleteID=$imageID&page=$currentPage&title=$this->searchTitle')}>删除</button>";
 
-            } else {
-                echo "<button class='pure-button pure-button-primary'
+                } else {
+                    echo "<button class='pure-button pure-button-primary'
             onclick=if(confirm('你真的要删除这张图片吗？删除后这张图片将永远消失，其他用户也不能访问这张图片')){window.open('myPhoto.php?deleteID=$imageID&page=$currentPage')}>删除</button>";
 
+                }
+                echo "</div>";
             }
-            echo "</div>";
         }
+
 
     }
 
@@ -110,30 +113,35 @@ class MyPhoto extends Page implements PageWithPagination
             if ($currentPage > 1) {
                 $previousPage = $currentPage - 1;
                 $href = "myPhoto.php" . $this->queryStringForPagination . "&page=$previousPage";
-                echo "<a href=$href>上一页</a>";
+                echo "<a href='$href'>上一页</a>";
             }
-            for ($i = 1; $i <= $maxNumOfPage; $i++) {
+
+            $startPage = max(1, $currentPage - 5);
+            $endPage = min($maxNumOfPage, $currentPage + 4);
+
+            for ($i = $startPage; $i <= $endPage; $i++) {
                 if ($currentPage == $i) {
                     $href = "myPhoto.php" . $this->queryStringForPagination . "&page=$i";
-                    echo "<a href=$href style='color: red'>$i</a>";
+                    echo "<a href='$href' style='color: red'>$i</a>";
                 } else {
                     $href = "myPhoto.php" . $this->queryStringForPagination . "&page=$i";
-                    echo "<a href=$href >$i</a>";
+                    echo "<a href='$href' >$i</a>";
                 }
             }
             if ($currentPage < $maxNumOfPage) {
                 $nextPage = $currentPage + 1;
                 $href = "myPhoto.php" . $this->queryStringForPagination . "&page=$nextPage";
-                echo "<a href=$href>下一页</a>";
+                echo "<a href='$href'>下一页</a>";
             }
         }
         // TODO: Implement printPagination() method.
     }
 
-    function printTitleInput($title){
-        if(!customIsEmpty($title)){
+    function printTitleInput($title)
+    {
+        if (!customIsEmpty($title)) {
             echo "<input name='title' type='text' class=\"pure-u-18-24\" value='$title'>";
-        }else{
+        } else {
             echo "<input name='title' type='text' class=\"pure-u-18-24\">";
         }
     }

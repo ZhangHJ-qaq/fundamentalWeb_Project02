@@ -124,7 +124,7 @@ class Browser extends Page implements PageWithPagination
     function printSearchResult()
     {
         $imageInfoList = $this->searchResult->imageInfoList;
-        if (count($imageInfoList) !== 0) {
+        if ($imageInfoList !== null && count($imageInfoList) !== 0) {
             for ($i = 0; $i <= count($imageInfoList) - 1; $i++) {
                 $title = $imageInfoList[$i]['Title'];
                 $imageID = $imageInfoList[$i]['ImageID'];
@@ -142,24 +142,27 @@ class Browser extends Page implements PageWithPagination
             $currentPage = ($this->searchResult)->currentPage;
             $maxNumOfPage = ($this->searchResult)->maxNumOfPage;
 
+            $startPage = max(1, $currentPage - 5);
+            $endPage = min($maxNumOfPage, $currentPage + 4);
+
             if ($currentPage > 1) {
                 $previousPage = $currentPage - 1;
                 $href = "browser.php" . $this->queryStringForPagination . "&page=$previousPage";
-                echo "<a href=$href>上一页</a>";
+                echo "<a href='$href'>上一页</a>";
             }
-            for ($i = 1; $i <= $maxNumOfPage; $i++) {
+            for ($i = $startPage; $i <= $endPage; $i++) {
                 if ($currentPage == $i) {
                     $href = "browser.php" . $this->queryStringForPagination . "&page=$i";
-                    echo "<a href=$href style='color: red'>$i</a>";
+                    echo "<a href='$href' style='color: red'>$i</a>";
                 } else {
                     $href = "browser.php" . $this->queryStringForPagination . "&page=$i";
-                    echo "<a href=$href >$i</a>";
+                    echo "<a href='$href' >$i</a>";
                 }
             }
             if ($currentPage < $maxNumOfPage) {
                 $nextPage = $currentPage + 1;
                 $href = "browser.php" . $this->queryStringForPagination . "&page=$nextPage";
-                echo "<a href=$href>下一页</a>";
+                echo "<a href='$href'>下一页</a>";
             }
         }
     }
@@ -174,7 +177,8 @@ class Browser extends Page implements PageWithPagination
         }
     }
 
-    function printTitleInput($title){
+    function printTitleInput($title)
+    {
         echo "<input type='text' class='pure-u-2-3' name='title' value=$title>";
     }
 

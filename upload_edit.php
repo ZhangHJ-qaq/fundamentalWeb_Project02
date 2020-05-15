@@ -31,6 +31,8 @@ $upload->printHeaderNeedLogin();
 //上传/修改的逻辑
 $upload->conductUploadModify();
 
+$upload->jumpToUploadIfUserNotHaveImage();//用户第一次进入本页面时根据其id和查询字符串中的modifyID，判断其是否有这个图片，如果没有则跳转成登陆
+
 ?>
 <div class="wrapper pure-g">
     <div class="pure-u-2-24"></div>
