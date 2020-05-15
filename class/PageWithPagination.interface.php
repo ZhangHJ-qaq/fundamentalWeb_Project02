@@ -5,4 +5,5 @@ interface PageWithPagination
 {
     function printPagination();
 
+
 }

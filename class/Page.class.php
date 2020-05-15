@@ -9,40 +9,43 @@ class Page//所有页面的基类
 
     function __construct()
     {
-        try {
-            $this->pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
-        } catch (PDOException $exception) {
-            exit();
-        }
+
+        $this->pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
+
     }
 
     function printHeaderNoNeedLogin()//打印出不需要登陆的header
     {
         echo "<header>";
         session_start();
-        if (isset($_SESSION['username'])) {
-            $uname = $_SESSION['username'];
-            echo "<span>$uname</span>";
+        $userInfo = $this->getUserInfo($_SESSION['uid']);
+        if ($userInfo == false) {
+            $hasLoggedIn = false;
+        } else {
+            $hasLoggedIn = true;
+            $uid = $userInfo['uid'];
+            $username = $userInfo['username'];
+        }
+        if ($hasLoggedIn) {
+            echo "<span>$username</span>";
         }
         echo " <a href='index.php' id='headerHome'>主页</a>";
         echo "<a href='browser.php' id='headerBrowse'>浏览</a>";
         echo "<a href='search.php' id='headerSearch'>搜索</a>";
 
-        if (isset($_SESSION['username'])) {
-            echo "<div id=\"personalCenter\">
+        if ($hasLoggedIn) {
+            echo "<div id='personalCenter'>
                 个人中心
-        <div id=\"headerDropdownMenu\">
-            <a href=\"upload_edit.php\" id='headerUpload'>上传照片</a>
-            <a href=\"myPhoto.php\" id='headerMyPhoto'>我的照片</a>
-            <a href=\"myFavor.php\" id='headerMyFavor'>我的收藏</a>
+        <div id='headerDropdownMenu'>
+            <a href='upload_edit.php' id='headerUpload'>上传照片</a>
+            <a href='myPhoto.php' id='headerMyPhoto'>我的照片</a>
+            <a href='myFavor.php' id='headerMyFavor'>我的收藏</a>
             <a href='changePassword.php' id='headerChangePassword'>修改密码</a>
-            <a href=\"logout.php\" id='headerLogout'>登出</a>
+            <a href='logout.php' id='headerLogout'>登出</a>
         </div>
     </div>";
-            $hasLoggedIn = true;
         } else {
             echo "<a href='login.php' id='login'>登录</a>";
-            $hasLoggedIn = false;
         }
         echo "</header>";
         return $hasLoggedIn;
@@ -52,32 +55,36 @@ class Page//所有页面的基类
     {//打印出需要登陆的header 如果用户不登陆，会被赶去登陆
         echo "<header>";
         session_start();
-        if (isset($_SESSION['username'])) {
-            $uname = $_SESSION['username'];
-            echo "<span>$uname</span>";
+        $userInfo = $this->getUserInfo($_SESSION['uid']);
+        if ($userInfo == false) {
+            $hasLoggedIn = false;
+            header("login.php");
+            exit();
+        } else {
+            $hasLoggedIn = true;
+            $uid = $userInfo['uid'];
+            $username = $userInfo['username'];
+        }
+        if ($hasLoggedIn) {
+            echo "<span>$username</span>";
         }
         echo " <a href='index.php' id='headerHome'>主页</a>";
         echo "<a href='browser.php' id='headerBrowse'>浏览</a>";
-
         echo "<a href='search.php' id='headerSearch'>搜索</a>";
 
-        if (isset($_SESSION['username'])) {
-            echo "<div id=\"personalCenter\">
+        if ($hasLoggedIn) {
+            echo "<div id='personalCenter'>
                 个人中心
-        <div id=\"headerDropdownMenu\">
-            <a href=\"upload_edit.php\" id='headerUpload'>上传照片</a>
-            <a href=\"myPhoto.php\" id='headerMyPhoto'>我的照片</a>
-            <a href=\"myFavor.php\" id='headerMyFavor'>我的收藏</a>
+        <div id='headerDropdownMenu'>
+            <a href='upload_edit.php' id='headerUpload'>上传照片</a>
+            <a href='myPhoto.php' id='headerMyPhoto'>我的照片</a>
+            <a href='myFavor.php' id='headerMyFavor'>我的收藏</a>
             <a href='changePassword.php' id='headerChangePassword'>修改密码</a>
-            <a href=\"logout.php\" id='headerLogout'>登出</a>
+            <a href='logout.php' id='headerLogout'>登出</a>
         </div>
     </div>";
-            $hasLoggedIn = true;
         } else {
             echo "<a href='login.php' id='login'>登录</a>";
-            $hasLoggedIn = false;
-            header("location:login.php");
-            exit();
         }
         echo "</header>";
         return $hasLoggedIn;
@@ -121,5 +128,20 @@ class Page//所有页面的基类
     function closePDO()
     {//关闭pdo
         $this->pdoAdapter = null;
+    }
+
+    private function getUserInfo($uid)
+    {
+        $userInfo = $this->pdoAdapter->selectRows("select UID,UserName from traveluser where UID=?", array($uid));
+        if (count($userInfo) === 1) {
+            $userInfo = $userInfo[0];
+            $username = $userInfo['UserName'];
+            $uid = $userInfo['UID'];
+            return array("uid" => $uid, "username" => $username);
+        } else {
+            return false;
+        }
+
+
     }
 }

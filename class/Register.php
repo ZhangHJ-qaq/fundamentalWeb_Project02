@@ -4,16 +4,21 @@ include_once "utilities/utilityFunction.php";
 include_once "utilities/PDOAdapter.php";
 include_once "utilities/dbconfig.php";
 include_once "utilities/htmlpurifier-4.12.0/library/HTMLPurifier.auto.php";
+include_once "class/MyCaptchaBuilder.php";
+include_once "class/PageWithCaptcha.php";
 
-class Register extends Page
+class Register extends Page implements PageWithCaptcha
 {
     private $message;
     private $htmlPurifier;
+    private $myCaptchaBuilder;
 
     public function __construct()
     {
         parent::__construct();
         $this->htmlPurifier = new HTMLPurifier();
+        $this->myCaptchaBuilder = new MyCaptchaBuilder();
+
     }
 
     function checkIfHasLoggedIn()
@@ -25,37 +30,18 @@ class Register extends Page
         }
     }
 
-    function tryRegister($username, $email, $password, $confirmPassword)
+    function tryRegister($username, $email, $password, $confirmPassword, $userInputCaptchaAnswer)
     {
-
 
 
         if ((!customIsEmpty($username)) && (!customIsEmpty($email)) && (!customIsEmpty($password)) && (!customIsEmpty($confirmPassword))) {
             //如果用户四样都有填写，则开始尝试注册流程
-            function avoidFrequentRegister(PDOAdapter $pdoAdapter)//检测用户是否频繁注册的机制。如果返回true说明用户频繁注册，返回false说明用户没有频繁注册。
-            {
-                $ipAddress = $_SERVER['REMOTE_ADDR'];
-                if ($pdoAdapter->isRowCountZero("select * from registerip where IP=?", array($ipAddress))) {//如果这个ip从未在注册过的ip库中出现过
-                    $thisTimeTryRegister = time();
-                    $pdoAdapter->exec("insert into registerip (IP, LastTimeTryRegister) values (?,?)", array($ipAddress, $thisTimeTryRegister));
-                    return false;
-                } else {
-                    $row = $pdoAdapter->selectRows("select * from registerip where IP=?", array($ipAddress))[0];
-                    $lastTimeTryRegister = $row['LastTimeTryRegister'];
-                    $thisTimeTryRegister = time();
-                    $timeGap = $thisTimeTryRegister - $lastTimeTryRegister;
-                    if ($timeGap < 60) {
-                        $pdoAdapter->exec("update registerip set LastTimeTryRegister=? where IP=?", array($thisTimeTryRegister, $ipAddress));
-                        return true;
-                    } else {
-                        $pdoAdapter->exec("update registerip set LastTimeTryRegister=? where IP=?", array($thisTimeTryRegister, $ipAddress));
-                        return false;
-                    }
-
-                }
+            if (!$this->checkCaptchaInput($userInputCaptchaAnswer)) {
+                $this->message = "验证码错误";
+                return;
             }
 
-            if (avoidFrequentRegister($this->pdoAdapter)) {
+            if ($this->avoidFrequentRegister()) {
                 $this->message = "你的注册过于频繁。请60秒后再试";
                 return;
             }
@@ -68,38 +54,6 @@ class Register extends Page
 
     function checkInputThenCreateUser($username, $email, $password, $confirmPassword)
     {
-        function checkPassword($password1, $password2)
-        {
-            if ($password1 !== $password2) {
-                return false;
-            } else {
-                if (!preg_match("/^.{6,18}$/", $password1) || preg_match("/^[0-9]{1,}$/", $password1)) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-
-        }
-
-        function checkUserExist($username, $pdoAdapter)
-        {
-            if ($pdoAdapter->isRowCountZero("select * from traveluser where UserName=?", array($username))) {
-                return false;
-            } else {
-                return true;
-            }
-
-        }
-
-        function createUser($username, $password, $email, $pdoAdapter)
-        {
-            $dateJoined = date("Y-m-d h:i:sa");
-            $salt = get_hash();//随机生成一个盐
-            $saltedEncryptedPassword = MD5($password . $salt);//哈希加盐，将密码存储到数据库
-            return $pdoAdapter->insertARow("insert into traveluser (UserName, Email, Pass, State, DateJoined, DateLastModified, salt,LastTimeTryLogin) VALUES (?,?,?,?,?,?,?,?)", array($username, $email, $saltedEncryptedPassword, 1, $dateJoined, $dateJoined, $salt, 0));
-        }
-
         $purifiedUsername = $this->htmlPurifier->purify($username);
         $purifiedPassword1 = $this->htmlPurifier->purify($password);
         $purifiedPassword2 = $this->htmlPurifier->purify($confirmPassword);
@@ -118,24 +72,23 @@ class Register extends Page
             $this->message = "邮箱格式错误";
             return;
         }
-        if (!checkPassword($purifiedPassword2, $purifiedPassword1)) {
+        if (!$this->checkPassword($purifiedPassword2, $purifiedPassword1)) {
             $this->message = "密码必须是6-18位，不能是纯数字。两次密码输入必须一致";
             return;
         }
 
         //检测用户名是否已经被别人先注册
-        if (checkUserExist($purifiedUsername, $this->pdoAdapter)) {
+        if ($this->checkUserExist($purifiedUsername)) {
             $this->message = "这个用户名已经被别人注册了。请换一个用户名";
             return;
         }
 
         //创建用户，并提示错误与成功
-        if (!createUser($purifiedUsername, $purifiedPassword1, $purifiedEmail, $this->pdoAdapter)) {
+        if (!$this->createUser($purifiedUsername, $purifiedPassword1, $purifiedEmail)) {
             $this->message = "未知的错误，注册失败";
             return;
         } else {
-            header("location:register_success.html");
-            exit();
+            $this->message = "注册成功。<a href='login.php'>去登陆</a>";
         }
 
 
@@ -149,4 +102,82 @@ class Register extends Page
     }
 
 
+    function generateCaptcha()
+    {
+        $this->myCaptchaBuilder->generateCaptcha();
+        $questionText = $this->myCaptchaBuilder->getCaptchaQuestionText();
+        $answer = $this->myCaptchaBuilder->getCaptchaAnswer();
+        echo "<label class='pure-u-1'>$questionText</label>";
+        echo "<input class='pure-u-1' name='captcha' type='text'>";
+        session_start();
+        $_SESSION['captchaAnswer'] = $answer;
+        // TODO: Implement generateCaptcha() method.
+    }
+
+    private function avoidFrequentRegister()//检测用户是否频繁注册的机制。如果返回true说明用户频繁注册，返回false说明用户没有频繁注册。
+    {
+        $ipAddress = $_SERVER['REMOTE_ADDR'];
+        if ($this->pdoAdapter->isRowCountZero("select * from registerip where IP=?", array($ipAddress))) {//如果这个ip从未在注册过的ip库中出现过
+            $thisTimeTryRegister = time();
+            $this->pdoAdapter->exec("insert into registerip (IP, LastTimeTryRegister) values (?,?)", array($ipAddress, $thisTimeTryRegister));
+            return false;
+        } else {
+            $row = $this->pdoAdapter->selectRows("select * from registerip where IP=?", array($ipAddress))[0];
+            $lastTimeTryRegister = $row['LastTimeTryRegister'];
+            $thisTimeTryRegister = time();
+            $timeGap = $thisTimeTryRegister - $lastTimeTryRegister;
+            if ($timeGap < 60) {
+                $this->pdoAdapter->exec("update registerip set LastTimeTryRegister=? where IP=?", array($thisTimeTryRegister, $ipAddress));
+                return true;
+            } else {
+                $this->pdoAdapter->exec("update registerip set LastTimeTryRegister=? where IP=?", array($thisTimeTryRegister, $ipAddress));
+                return false;
+            }
+
+        }
+    }
+
+    private function checkPassword($password1, $password2)
+    {
+        if ($password1 !== $password2) {
+            return false;
+        } else {
+            if (!preg_match("/^.{6,18}$/", $password1) || preg_match("/^[0-9]{1,}$/", $password1)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+    }
+
+    private function checkUserExist($username)
+    {
+        if ($this->pdoAdapter->isRowCountZero("select * from traveluser where UserName=?", array($username))) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    private function createUser($username, $password, $email)
+    {
+        $dateJoined = date("Y-m-d h:i:sa");
+        $salt = get_hash();//随机生成一个盐
+        $saltedEncryptedPassword = MD5($password . $salt);//哈希加盐，将密码存储到数据库
+        return $this->pdoAdapter->insertARow("insert into traveluser (UserName, Email, Pass, State, DateJoined, DateLastModified, salt,LastTimeTryLogin) VALUES (?,?,?,?,?,?,?,?)", array($username, $email, $saltedEncryptedPassword, 1, $dateJoined, $dateJoined, $salt, 0));
+    }
+
+    function checkCaptchaInput($userCaptchaInput)
+    {
+        session_start();
+        $correctCaptchaAnswer = $_SESSION['captchaAnswer'];
+        if ($userCaptchaInput != $correctCaptchaAnswer) {
+            return false;
+        } else {
+            return true;
+        }
+        // TODO: Implement checkCaptchaInput() method.
+    }
 }

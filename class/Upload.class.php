@@ -5,8 +5,10 @@ include_once "utilities/utilityFunction.php";
 include_once "utilities/imagefilter.php";
 include_once "class/UploadedImageInfo.class.php";
 include_once "User.class.php";
+include_once "class/PageWithCaptcha.php";
+include_once "class/MyCaptchaBuilder.php";
 
-class Upload extends Page
+class Upload extends Page implements PageWithCaptcha
 {
     private $controlForDisplay;//用户第一次进入这个页面，判断用户想上传还是编辑，控制对应的输出
     private $request;//判断用户的请求是上传还是修改
@@ -15,6 +17,7 @@ class Upload extends Page
     private $user;
     private $message;
     public $originalImageInfo;
+    private $myCaptchaBuilder;
 
     public function __construct($controlForDisplay, $request)
     {
@@ -32,6 +35,7 @@ class Upload extends Page
         $this->user = new User($_SESSION['uid'], $this->pdoAdapter);
         $this->modifyID = $_POST['modifyID'];
         $this->purifyControlForDisplay();
+        $this->myCaptchaBuilder = new MyCaptchaBuilder();
 
     }
 
@@ -51,12 +55,20 @@ class Upload extends Page
     }
 
 
-    function conductUploadModify()
+    function conductUploadModify($userCaptchaInput)
     {
         if ($this->request === 'modify' && !customIsEmpty($this->modifyID)) {
+            if (!$this->checkCaptchaInput($userCaptchaInput)) {
+                $this->message = "验证码错误";
+                return;
+            }
             $this->message = $this->user->modifyImage($this->uploadedOrModifyImageInfo, $this->modifyID);
 
         } elseif ($this->request === 'upload') {
+            if (!$this->checkCaptchaInput($userCaptchaInput)) {
+                $this->message = "验证码错误";
+                return;
+            }
             $this->message = $this->user->uploadImage($this->uploadedOrModifyImageInfo);
         }
 
@@ -151,4 +163,29 @@ class Upload extends Page
     }
 
 
+    function generateCaptcha()
+    {
+        $this->myCaptchaBuilder->generateCaptcha();
+        $questionText = $this->myCaptchaBuilder->getCaptchaQuestionText();
+        $answer = $this->myCaptchaBuilder->getCaptchaAnswer();
+        echo "<label class='pure-u-1'>$questionText</label>";
+        echo "<input class='pure-u-1' name='captcha' type='text'>";
+        session_start();
+        $_SESSION['captchaAnswer'] = $answer;
+        // TODO: Implement generateCaptcha() method.
+    }
+
+
+    function checkCaptchaInput($userCaptchaInput)
+    {
+        session_start();
+        $correctCaptchaAnswer = $_SESSION['captchaAnswer'];
+        if ($userCaptchaInput != $correctCaptchaAnswer) {
+            return false;
+        } else {
+            return true;
+        }
+
+        // TODO: Implement checkCaptchaInput() method.
+    }
 }

@@ -3,20 +3,31 @@ include_once "class/Page.class.php";
 include_once "utilities/utilityFunction.php";
 include_once "utilities/PDOAdapter.php";
 include_once "utilities/dbconfig.php";
+include_once "class/PageWithCaptcha.php";
+include_once "class/MyCaptchaBuilder.php";
 
 
-class Login extends Page
+class Login extends Page implements PageWithCaptcha
 {
     private $message;
+    private $myCaptchaBuilder;
 
     public function __construct()
     {
         parent::__construct();
+        $this->myCaptchaBuilder = new MyCaptchaBuilder();
     }
 
-    public function tryLogin($username, $password)
+    public function tryLogin($username, $password, $userInputCaptcha)
     {
         if (!customIsEmpty($username) && !customIsEmpty($password)) {//如果用户用户名和密码都有输入
+
+            //检测验证码
+            if (!$this->checkCaptchaInput($userInputCaptcha)) {
+                $this->message = "验证码错误";
+                return;
+            }
+
             $row = $this->pdoAdapter->selectRows("select * from traveluser where UserName=?", array($_POST['username']));
             $uid = $row[0]['UID'];
             $correctPassword = $row[0]['Pass'];
@@ -55,4 +66,28 @@ class Login extends Page
     }
 
 
+    function generateCaptcha()
+    {
+        $this->myCaptchaBuilder->generateCaptcha();
+        $questionText = $this->myCaptchaBuilder->getCaptchaQuestionText();
+        $answer = $this->myCaptchaBuilder->getCaptchaAnswer();
+        echo "<label class='pure-u-1'>$questionText</label>";
+        echo "<input class='pure-u-1' name='captcha' type='text'>";
+        session_start();
+        $_SESSION['captchaAnswer'] = $answer;
+
+        // TODO: Implement generateCaptcha() method.
+    }
+
+    function checkCaptchaInput($userCaptchaInput)
+    {
+        session_start();
+        $correctCaptchaAnswer = $_SESSION['captchaAnswer'];
+        if ($userCaptchaInput != $correctCaptchaAnswer) {
+            return false;
+        } else {
+            return true;
+        }
+        // TODO: Implement checkCaptchaInput() method.
+    }
 }

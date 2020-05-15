@@ -29,7 +29,7 @@ $upload->printHeaderNeedLogin();
 
 <?php
 //上传/修改的逻辑
-$upload->conductUploadModify();
+$upload->conductUploadModify($_POST['captcha']);
 
 $upload->jumpToUploadIfUserNotHaveImage();//用户第一次进入本页面时根据其id和查询字符串中的modifyID，判断其是否有这个图片，如果没有则跳转成登陆
 
@@ -74,7 +74,6 @@ $upload->jumpToUploadIfUserNotHaveImage();//用户第一次进入本页面时根
                     <?php //如果用户是编辑图片，则从数据库中读出原有的数据并填充
                     $upload->printImageDesc();
                     ?>
-                    <!--                        <textarea name="descInput" id="descInput" class="pure-u-1"></textarea>-->
                     <label class="pure-u-1">主题，国家与城市</label>
                     <div id="selectBox" class="pure-u-1">
                         <div class="wrapper pure-g">
@@ -100,6 +99,10 @@ $upload->jumpToUploadIfUserNotHaveImage();//用户第一次进入本页面时根
                             </select>
                         </div>
                     </div>
+                    <?php
+                    $upload->generateCaptcha();
+
+                    ?>
                     <div class="pure-u-1" id="errorArea">
                     </div>
                     <button class="pure-button pure-button-primary pure-u-1" type="submit" id="submit">提交</button>

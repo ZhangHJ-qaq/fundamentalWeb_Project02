@@ -19,7 +19,7 @@ $changePassword = new ChangePassword();
 <body>
 <?php
 $changePassword->printHeaderNeedLogin();
-$changePassword->changePassword($_POST['originalPassword'], $_POST['newPassword'], $_POST['newPasswordConfirm']);
+$changePassword->changePassword($_POST['originalPassword'], $_POST['newPassword'], $_POST['newPasswordConfirm'],$_POST['captcha']);
 
 
 ?>
@@ -42,6 +42,9 @@ $changePassword->changePassword($_POST['originalPassword'], $_POST['newPassword'
                         <input class="pure-u-1" name="newPassword" type="password" id="newPassword">
                         <label class="pure-u-1">确认新密码</label>
                         <input class="pure-u-1" name="newPasswordConfirm" type="password" id="newPasswordConfirm">
+                        <?php
+                        $changePassword->generateCaptcha();
+                        ?>
                         <button class="pure-u-1 pure-button-primary pure-button" id="changePasswordButton"
                                 type="submit">修改密码
                         </button>

@@ -17,7 +17,7 @@ $login = new Login();
 </head>
 <?php
 
-$login->tryLogin($_POST['username'], $_POST['password']);
+$login->tryLogin($_POST['username'], $_POST['password'],$_POST['captcha']);
 
 
 ?>
@@ -35,6 +35,9 @@ $login->tryLogin($_POST['username'], $_POST['password']);
             <input type="text" name="username" class="pure-u-1" id="usernameInput">
             <label class="pure-u-1">密码</label>
             <input type="password" name="password" class="pure-u-1" id="passwordInput">
+            <?php
+            $login->generateCaptcha();
+            ?>
             <button class="pure-button pure-button-primary pure-u-1" id="submit">登录</button>
             <label class="pure-u-1">没有账号？<a href="register.php">注册</a>！</label>
             <div class="pure-u-1" id="errorArea"></div>

@@ -16,7 +16,7 @@ $register = new Register();
 </head>
 <?php
 $register->checkIfHasLoggedIn();
-$register->tryRegister($_POST['username'], $_POST['email'], $_POST['password1'], $_POST['password2']);
+$register->tryRegister($_POST['username'], $_POST['email'], $_POST['password1'], $_POST['password2'],$_POST['captcha']);
 
 
 ?>
@@ -38,6 +38,9 @@ $register->tryRegister($_POST['username'], $_POST['email'], $_POST['password1'],
             <input type="password" name="password1" class="pure-u-1" id="password1Input">
             <label class="pure-u-1">确认密码</label>
             <input type="password" name="password2" class="pure-u-1" id="password2Input">
+            <?php
+            $register->generateCaptcha();
+            ?>
             <button class="pure-button pure-button-primary pure-u-1" id="submit" type="submit">注册</button>
             <label class="pure-u-1">已有账号？<a href="login.php">登录</a>！</label>
             <div class="pure-u-1" id="errorArea"></div>
