@@ -27,16 +27,6 @@ form legend{
         display: none;
     }
 }
-.pagination{
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-.pagination>a{
-    color: black;
-    text-decoration: none;
-    margin-left: 5px;
-    margin-right: 5px;
-}
 
 .list a{
     margin-top: 5px;

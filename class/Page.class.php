@@ -35,6 +35,7 @@ class Page//所有页面的基类
             <a href=\"upload_edit.php\" id='headerUpload'>上传照片</a>
             <a href=\"myPhoto.php\" id='headerMyPhoto'>我的照片</a>
             <a href=\"myFavor.php\" id='headerMyFavor'>我的收藏</a>
+            <a href='changePassword.php' id='headerChangePassword'>修改密码</a>
             <a href=\"logout.php\" id='headerLogout'>登出</a>
         </div>
     </div>";
@@ -67,6 +68,7 @@ class Page//所有页面的基类
             <a href=\"upload_edit.php\" id='headerUpload'>上传照片</a>
             <a href=\"myPhoto.php\" id='headerMyPhoto'>我的照片</a>
             <a href=\"myFavor.php\" id='headerMyFavor'>我的收藏</a>
+            <a href='changePassword.php' id='headerChangePassword'>修改密码</a>
             <a href=\"logout.php\" id='headerLogout'>登出</a>
         </div>
     </div>";

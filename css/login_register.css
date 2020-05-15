@@ -12,7 +12,7 @@ legend{
     margin-bottom: 5px;
 }
 #errorArea{
-    background-color: rgba(255,0,0,0.3);
+    color: red;
     padding: 10px;
     visibility: hidden;
 }

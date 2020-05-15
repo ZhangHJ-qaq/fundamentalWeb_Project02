@@ -110,8 +110,6 @@ $upload->jumpToUploadIfUserNotHaveImage();//用户第一次进入本页面时根
 
     </main>
 </div>
-<footer>
-    ZHJ制作 19302010021 本网站由<a href="https://purecss.net">Pure.css</a>驱动
-</footer>
+
 </body>
 </html>

@@ -7,8 +7,13 @@ class PDOAdapter
 
     function __construct($header, $username, $password, $dbname)
     {
-        $this->pdo = new PDO($header, $username, $password);
-        $this->pdo->exec("use $dbname");
+        try {
+            $this->pdo = new PDO($header, $username, $password);
+            $this->pdo->exec("use $dbname");
+        } catch (PDOException $PDOException) {
+            exit();
+        }
+
     }
 
     function exec($sql, $bindValueArray = null)

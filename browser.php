@@ -114,7 +114,7 @@ $browser->printHeaderNoNeedLogin();
                     if (isset($_GET['title'])) {//如果用户使用标题搜索
                         $browser->searchByTitle($_GET['title'], $_GET['page']);
                         $browser->printSearchResult();
-                    } else if (!empty($_GET['content']) || !empty($_GET['countryISO']) || !empty($_GET['cityCode'])) {
+                    } else if (!customIsEmpty($_GET['content']) || !customIsEmpty($_GET['countryISO']) || !customIsEmpty($_GET['cityCode'])) {
                         $browser->searchByOthers($_GET['content'], $_GET['countryISO'], $_GET['cityCode'], $_GET['page']);
                         $browser->printSearchResult();
                     }
@@ -131,9 +131,7 @@ $browser->printHeaderNoNeedLogin();
     </main>
 
 </div>
-<footer>
-    ZHJ制作 19302010021 本网站由<a href="https://purecss.net">Pure.css</a>驱动
-</footer>
+
 
 </body>
 </html>

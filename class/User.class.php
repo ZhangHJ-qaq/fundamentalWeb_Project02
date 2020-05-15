@@ -284,5 +284,76 @@ class User
         return count($this->pdoAdapter->selectRows("select imageID from travelimage where ImageID=?", array($imageID))) !== 0;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    public function changePassword($originalUnsaltedPasswordInput, $newPassword1, $newPassword2)
+    {
+        /* if ($newPassword1 === $newPassword2) {
+             if (!preg_match("/^.{6,18}$/", $newPassword1) || preg_match("/^[0-9]{1,}$/", $newPassword1)) {
+                 $info = $this->getOriginalSaltAndPassword();
+                 $salt = $info['salt'];
+                 $originalSaltedPassword = $info['originalSaltedPassword'];
+                 if (MD5($originalUnsaltedPasswordInput . $salt) === $originalSaltedPassword) {
+                     $purifier = new HTMLPurifier();
+                     if ($newPassword1 === $purifier->purify($newPassword1)) {
+
+                     }else{
+                         return "修改密码失败";
+                     }
+
+                 } else {
+                     return "原密码错误，不能修改密码";
+                 }
+
+
+             } else {
+                 return "密码必须是6-18位，且不能是纯数字";
+             }
+         } else {
+             return "两次密码不一致";
+         }*/
+        if ($newPassword1 !== $newPassword2) {
+            return "两次输入密码不一致";
+        }
+        if (!preg_match("/^.{6,18}$/", $newPassword1) || preg_match("/^[0-9]{1,}$/", $newPassword1)) {
+            return "密码必须是6-18位";
+        }
+        $purifier = new HTMLPurifier();
+        if ($newPassword1 !== $purifier->purify($newPassword1)) {
+            return "修改失败";
+        }
+        $info = $this->getOriginalSaltAndPassword();
+        $originalSaltedPassword = $info['originalSaltedPassword'];
+        $salt = $info['salt'];
+        if (MD5($originalUnsaltedPasswordInput . $salt) !== $originalSaltedPassword) {
+            return "原密码错误，密码修改失败";
+        }
+        $newSaltedPassword = MD5($newPassword1 . $salt);
+        $sql = "update traveluser set Pass=? where UID=?";
+        $result = $this->pdoAdapter->exec($sql, array($newSaltedPassword, $this->getUid()));
+        if ($result === true) {
+            return "密码修改成功";
+        } else {
+            return "密码修改失败";
+        }
+
+    }
+
+    private function getOriginalSaltAndPassword()
+    {
+        $sql = "select Pass,salt from traveluser where UID=?";
+        $info = $this->pdoAdapter->selectRows($sql, array($this->getUid()))[0];
+        $originalSaltedPassword = $info['Pass'];
+        $salt = $info['salt'];
+        return array("originalSaltedPassword" => $originalSaltedPassword, "salt" => $salt);
+
+    }
+
 
 }
