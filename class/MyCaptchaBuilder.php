@@ -33,13 +33,11 @@ class MyCaptchaBuilder
         $operator = '';
         switch ($num) {
             case 0:
-                $operand = "plus";break;
-                break;
+                $operator = "plus";break;
             case 1:
-                $operand = "minus";break;
-                break;
+                $operator = "minus";break;
             default:
-                $operand = "times";break;
+                $operator = "times";break;
         }
         return $operator;
 

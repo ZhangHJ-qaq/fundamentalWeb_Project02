@@ -58,7 +58,7 @@ class Page//所有页面的基类
         $userInfo = $this->getUserInfo($_SESSION['uid']);
         if ($userInfo == false) {
             $hasLoggedIn = false;
-            header("login.php");
+            header("location:login.php");
             exit();
         } else {
             $hasLoggedIn = true;

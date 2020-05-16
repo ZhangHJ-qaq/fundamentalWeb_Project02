@@ -37,8 +37,10 @@ class User
             $resultOfDeleteFavor = $this->pdoAdapter->exec($sql, array($deleteID));
             $resultOfDeleteSmallFile = deleteFile("img/small/$imagePath");
             $resultOfDeleteBigFile = deleteFile("img/large/$imagePath");
+            $resultOfDeleteMediumFile = deleteFile("img/medium/$imagePath");
 
-            if ($resultOfDeleteFavor && $resultOfDeleteImage && $resultOfDeleteBigFile && $resultOfDeleteSmallFile) {//如果删除记录，删除大小文件都成功
+
+            if ($resultOfDeleteFavor && $resultOfDeleteImage && $resultOfDeleteBigFile && $resultOfDeleteSmallFile && $resultOfDeleteMediumFile) {//如果删除记录，删除大小文件都成功
                 $message = "删除成功";
                 $this->pdoAdapter->commit();
             } else {//反之回滚
@@ -82,18 +84,30 @@ class User
 
             $resultOfCopy = copy($_FILES['imageInput']['tmp_name'], "img/large/" . $newFileName);
 
-            $compressedImage = new ImageFilter("img/large/$newFileName", array('scaling' => ['size' => "150,150"]), "img/small/$newFileName");
-            $resultOfCompress = $compressedImage->outimage();
+            $imageInfo = getimagesize($_FILES['imageInput']['tmp_name']);
+            $width = $imageInfo[0];
 
-            if ($resultOfCopy && $resultOfUpdate && $resultOfCompress !== false) {//如果三者都成功
+            $mediumWidth = min(768, $width);
+            $smallWidth = min(250, $width);
+
+            $compressedSmallImage = new ImageFilter("img/large/$newFileName", array('scaling' => ['size' => "$smallWidth"]), "img/small/$newFileName");
+            $resultOfCompress = $compressedSmallImage->outimage();
+
+            $compressedMediumImage = new ImageFilter("img/large/$newFileName", array('scaling' => ['size' => "$mediumWidth"]), "img/medium/$newFileName");
+            $resultOfCompressToMedium = $compressedMediumImage->outimage();
+
+
+            if ($resultOfCopy && $resultOfUpdate && ($resultOfCompress !== false) && ($resultOfCompressToMedium !== false)) {//如果三者都成功
                 $this->pdoAdapter->commit();
                 deleteFile("img/large/$originalFileName");//删掉数据库里的旧照片
                 deleteFile("img/small/$originalFileName");
+                deleteFile("img/medium/$originalFileName");
                 $message = "修改成功！";
             } else {//如果不成功
                 $this->pdoAdapter->rollBack();
                 deleteFile("img/large/$newFileName");//删掉数据库里的新照片，此时旧照片不动
                 deleteFile("img/small/$newFileName");
+                deleteFile("img/medium/$newFileName");
                 $message = "修改失败!";
             }
 
@@ -141,12 +155,22 @@ class User
 
         $resultOfCopy = copy($_FILES['imageInput']['tmp_name'], "img/large/" . $newFileName);//将图片原封不动地拷贝到大图片的文件夹内
 
+        $imageInfo = getimagesize($_FILES['imageInput']['tmp_name']);
+        $width = $imageInfo[0];
 
-        $compressedImage = new ImageFilter("img/large/$newFileName", array('scaling' => ['size' => "150,150"]), "img/small/$newFileName");
-        $resultOfCompress = $compressedImage->outimage();//压缩图片，输出到小图片文件夹
+        $mediumWidth = min(768, $width);
+        $smallWidth = min(250, $width);
 
 
-        if ($resultOfInsertRow && $resultOfCopy && ($resultOfCompress !== false)) {//如果插入行，拷贝到大图片文件夹，输出到小文件夹都成功
+        $compressedSmallImage = new ImageFilter("img/large/$newFileName", array('scaling' => ['size' => "$smallWidth"]), "img/small/$newFileName");
+        $resultOfCompressToSmall = $compressedSmallImage->outimage();//压缩图片，输出到小图片文件夹
+
+
+        $compressedMediumImage = new ImageFilter("img/large/$newFileName", array('scaling' => ['size' => "$mediumWidth"]), "img/medium/$newFileName");
+        $resultOfCompressToMedium = $compressedMediumImage->outimage();
+
+
+        if ($resultOfInsertRow && $resultOfCopy && ($resultOfCompressToSmall !== false) && ($resultOfCompressToMedium !== false)) {//如果插入行，拷贝到大图片文件夹，输出到小文件夹都成功
             $this->pdoAdapter->commit();
             $message = "上传成功!";
         } else {//否则回滚
@@ -160,7 +184,7 @@ class User
 
     }
 
-    function checkAndPurifyImageInfo(UploadedImageInfo &$uploadedImageInfo)
+    private function checkAndPurifyImageInfo(UploadedImageInfo &$uploadedImageInfo)
     {
         if (customIsEmpty($uploadedImageInfo->titleInput) ||
             customIsEmpty($uploadedImageInfo->descInput) ||
@@ -194,7 +218,7 @@ class User
 
     }
 
-    function checkFileInput(array $fileInput)
+    private function checkFileInput(array $fileInput)
     {
         if ($fileInput['error'] !== 0) {//是否上传成功
             return "文件上传失败，请重试";
@@ -208,7 +232,7 @@ class User
         return false;
     }
 
-    function getUnusedImageID()
+    private function getUnusedImageID()
     {
         $needToContiune = true;
         while (true) {
@@ -224,7 +248,7 @@ class User
 
     }
 
-    function getUnusedFileName(UploadedImageInfo $uploadedImageInfo)
+    private function getUnusedFileName(UploadedImageInfo $uploadedImageInfo)
     {
         $needToContiune = true;
         while (true) {
@@ -294,30 +318,6 @@ class User
 
     public function changePassword($originalUnsaltedPasswordInput, $newPassword1, $newPassword2)
     {
-        /* if ($newPassword1 === $newPassword2) {
-             if (!preg_match("/^.{6,18}$/", $newPassword1) || preg_match("/^[0-9]{1,}$/", $newPassword1)) {
-                 $info = $this->getOriginalSaltAndPassword();
-                 $salt = $info['salt'];
-                 $originalSaltedPassword = $info['originalSaltedPassword'];
-                 if (MD5($originalUnsaltedPasswordInput . $salt) === $originalSaltedPassword) {
-                     $purifier = new HTMLPurifier();
-                     if ($newPassword1 === $purifier->purify($newPassword1)) {
-
-                     }else{
-                         return "修改密码失败";
-                     }
-
-                 } else {
-                     return "原密码错误，不能修改密码";
-                 }
-
-
-             } else {
-                 return "密码必须是6-18位，且不能是纯数字";
-             }
-         } else {
-             return "两次密码不一致";
-         }*/
         if ($newPassword1 !== $newPassword2) {
             return "两次输入密码不一致";
         }

@@ -35,8 +35,8 @@ class ImageDetail extends Page
                     $this->message = "未登录的用户不可以取消收藏图片";
                 }
             }
-        }else{
-            $this->message="这张图片不存在";
+        } else {
+            $this->message = "这张图片不存在";
         }
     }//收藏和取消收藏的逻辑
 
@@ -74,7 +74,8 @@ class ImageDetail extends Page
         if ($this->getImage) {
             $path = $this->imageInfo[0]['PATH'];
             $title = $this->imageInfo[0]['Title'];
-            echo "<img src=img/large/$path alt='$title' style='max-width: 100%'>";
+            echo "<img src=img/medium/$path alt='$title' style='max-width: 100%'>";
+            echo "<a href='img/large/$path'>下载原图</a>";
         } else {
             echo "<div style='font-size: 110%;color: red'>错误:你请求的这个图片不存在</div>";
             exit();

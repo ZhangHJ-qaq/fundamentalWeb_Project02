@@ -120,7 +120,7 @@ class Upload extends Page implements PageWithCaptcha
             $sql = "select Title,Description,ContentID,travelimage.CountryCodeISO,CityCode,PATH,AsciiName from travelimage inner join geocities on CityCode=GeoNameID where ImageID=? and UID=?";
             $this->originalImageInfo = $this->pdoAdapter->selectRows($sql, array($_GET['modifyID'], $_SESSION['uid']))[0];
             $path = $this->originalImageInfo['PATH'];
-            echo "<img alt='' src='img/large/$path' style='max-width: 100%'>";
+            echo "<img alt='' src='img/medium/$path' style='max-width: 100%'>";
         }
     }
 

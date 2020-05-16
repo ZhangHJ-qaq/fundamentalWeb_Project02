@@ -11,6 +11,7 @@ class PDOAdapter
             $this->pdo = new PDO($header, $username, $password);
             $this->pdo->exec("use $dbname");
         } catch (PDOException $PDOException) {
+            header("location:error.html");
             exit();
         }
 

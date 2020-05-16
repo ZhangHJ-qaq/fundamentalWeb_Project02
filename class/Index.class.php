@@ -41,7 +41,7 @@ class Index extends Page
         $title = $imageInfo[0]['Title'];
         $path = $imageInfo[0]['PATH'];
         echo "<a class='pure-u-1 hasShadow' href=imageDetail.php?imageID=$imageID>";
-        echo "<img src=img/large/$path alt='$title' class='pure-u-1'>";
+        echo "<img src=img/medium/$path alt='$title' class='pure-u-1'>";
         echo "</a>";
 
     }//打印大图
