@@ -2,4 +2,12 @@
 
 19302010021 张皓捷
 
-项目地址：miaowumiaowu.buzz（暂时下线，等面试前几天再上线
+完成情况:
+
+bonus1:完成
+
+bonus2:没有完成
+
+bonus3:完成
+
+项目地址:photoshare.miaowumiaowu.buzz
