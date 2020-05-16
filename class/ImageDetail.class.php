@@ -74,10 +74,10 @@ class ImageDetail extends Page
         if ($this->getImage) {
             $path = $this->imageInfo[0]['PATH'];
             $title = $this->imageInfo[0]['Title'];
-            echo "<img src=img/medium/$path alt='$title' style='max-width: 100%'>";
-            echo "<a href='img/large/$path'>下载原图</a>";
+            echo "<img src=img/medium/$path alt='$title' style='max-width: 100%' class='pure-u-1' id='image'>";
+            echo "<a class='pure-u-1' id='downloadOriginalImageButton' href='img/large/$path' >下载原图</a>";
         } else {
-            echo "<div style='font-size: 110%;color: red'>错误:你请求的这个图片不存在</div>";
+            echo "<div style='font-size: 110%;color: red' class='pure-u-1'>错误:你请求的这个图片不存在</div>";
             exit();
         }
 

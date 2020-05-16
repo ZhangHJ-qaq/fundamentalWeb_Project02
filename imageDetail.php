@@ -26,6 +26,7 @@ $hasLoggedIn = $imageDetail->printHeaderNoNeedLogin();
     <main class="pure-u-20-24 hasShadow" id="panel">
         <div class="wrapper pure-g">
             <div class="pure-u-1-2">
+                <div class="wrapper pure-g" id="imageWrapper">
                 <?php
                 //收藏/取消收藏的逻辑（请求是否合法在user类中完成）
                 $imageDetail->likeUnlike($_GET['imageID'], $_GET['action'], $hasLoggedIn);
@@ -33,6 +34,7 @@ $hasLoggedIn = $imageDetail->printHeaderNoNeedLogin();
                 $imageDetail->searchImage($_GET['imageID']);
                 $imageDetail->printBigImage();
                 ?>
+                </div>
             </div>
             <div class="pure-u-1-2">
                 <div class="wrapper pure-g">

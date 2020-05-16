@@ -13,3 +13,29 @@ button>a{
     color: white;
     text-decoration: none;
 }
+#imageWrapper{
+    position: relative;
+}
+
+#downloadOriginalImageButton {
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    background-color: beige;
+    font-size: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    opacity: 0;
+    color: black;
+}
+
+#imageWrapper:hover #downloadOriginalImageButton{
+    opacity: 100%;
+    transition: all;
+    transition-duration: 500ms;
+    transition-timing-function: ease;
+
+}
+
+
+
