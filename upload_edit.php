@@ -1,7 +1,7 @@
 <?php
 session_start();
-include_once "class/Upload.class.php";
-$upload = new Upload($_GET['action'], $_POST['request']);
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/Upload.class.php";
+$upload = new Upload($_GET['control'], $_POST['request']);
 ?>
 
 <!DOCTYPE html>

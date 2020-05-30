@@ -1,6 +1,6 @@
 <?php
 
-include_once "class/Browser.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/Browser.class.php";
 $browser = new Browser();
 
 ?>

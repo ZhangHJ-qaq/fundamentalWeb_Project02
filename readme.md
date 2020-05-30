@@ -11,3 +11,5 @@ bonus2:没有完成
 bonus3:完成
 
 项目地址:photoshare.miaowumiaowu.buzz
+
+项目缺点：前后端耦合度很高 

@@ -1,5 +1,5 @@
 <?php
-include_once "Page.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/Page.class.php";
 
 class Index extends Page
 {

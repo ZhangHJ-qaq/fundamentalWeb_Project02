@@ -1,11 +1,11 @@
 <?php
-include_once "class/Page.class.php";
-include_once "utilities/utilityFunction.php";
-include_once "utilities/PDOAdapter.php";
-include_once "utilities/dbconfig.php";
-include_once "utilities/htmlpurifier-4.12.0/library/HTMLPurifier.auto.php";
-include_once "class/MyCaptchaBuilder.php";
-include_once "class/PageWithCaptcha.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/Page.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/utilityFunction.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/PDOAdapter.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/dbconfig.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/htmlpurifier-4.12.0/library/HTMLPurifier.auto.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/MyCaptchaBuilder.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/PageWithCaptcha.php";
 
 class Register extends Page implements PageWithCaptcha
 {

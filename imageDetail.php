@@ -1,7 +1,7 @@
 <?php
 session_start();
-include_once "class/ImageDetail.class.php";
-include_once "class/User.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/ImageDetail.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/User.class.php";
 $imageDetail = new ImageDetail();
 ?>
 <!DOCTYPE html>

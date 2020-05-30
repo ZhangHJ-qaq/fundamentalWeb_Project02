@@ -1,7 +1,7 @@
 <?php
-include_once "utilities/PDOAdapter.php";
-include_once "utilities/dbconfig.php";
-include_once "utilities/utilityFunction.php";
+include_once  $_SERVER['DOCUMENT_ROOT'] . "/utilities/PDOAdapter.php";
+include_once  $_SERVER['DOCUMENT_ROOT'] . "/utilities/dbconfig.php";
+include_once  $_SERVER['DOCUMENT_ROOT'] . "/utilities/utilityFunction.php";
 
 class Page//所有页面的基类
 {

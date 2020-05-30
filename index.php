@@ -1,5 +1,5 @@
 <?php
-include_once "class/Index.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/Index.class.php";
 $index = new Index();
 
 ?>

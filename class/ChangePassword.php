@@ -1,9 +1,9 @@
 <?php
-include_once "class/Page.class.php";
-include_once "class/User.class.php";
-include_once "utilities/utilityFunction.php";
-include_once "class/MyCaptchaBuilder.php";
-include_once "class/PageWithCaptcha.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/Page.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/User.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/utilityFunction.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/MyCaptchaBuilder.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/PageWithCaptcha.php";
 
 class ChangePassword extends Page implements PageWithCaptcha
 {

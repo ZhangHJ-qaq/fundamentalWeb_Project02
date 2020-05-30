@@ -1,8 +1,8 @@
 <?php
-include_once "Page.class.php";
-include_once "SearchRequest.class.php";
-include_once "SearchResult.class.php";
-include_once "PageWithPagination.interface.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/Page.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/SearchRequest.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/SearchResult.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/PageWithPagination.interface.php";
 
 class Search extends Page implements PageWithPagination
 {

@@ -1,5 +1,5 @@
 <?php
-include_once "class/Login.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/Login.php";
 $login = new Login();
 ?>
 
@@ -28,9 +28,7 @@ $login->tryLogin($_POST['username'], $_POST['password'],$_POST['captcha']);
         <legend>登录</legend>
         <div class="pure-u-1-4"></div>
         <div class="pure-u-1-2" id="wrapper">
-            <?php
-            $login->printMessageIfNotEmpty();
-            ?>
+
             <label class="pure-u-1">用户名</label>
             <input type="text" name="username" class="pure-u-1" id="usernameInput">
             <label class="pure-u-1">密码</label>
@@ -40,6 +38,9 @@ $login->tryLogin($_POST['username'], $_POST['password'],$_POST['captcha']);
             ?>
             <button class="pure-button pure-button-primary pure-u-1" id="submit">登录</button>
             <label class="pure-u-1">没有账号？<a href="register.php">注册</a>！</label>
+            <?php
+            $login->printMessageIfNotEmpty();
+            ?>
             <div class="pure-u-1" id="errorArea"></div>
         </div>
     </fieldset>

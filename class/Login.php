@@ -1,10 +1,10 @@
 <?php
-include_once "class/Page.class.php";
-include_once "utilities/utilityFunction.php";
-include_once "utilities/PDOAdapter.php";
-include_once "utilities/dbconfig.php";
-include_once "class/PageWithCaptcha.php";
-include_once "class/MyCaptchaBuilder.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/Page.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/utilityFunction.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/PDOAdapter.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/dbconfig.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/PageWithCaptcha.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/MyCaptchaBuilder.php";
 
 
 class Login extends Page implements PageWithCaptcha
@@ -20,6 +20,7 @@ class Login extends Page implements PageWithCaptcha
 
     public function tryLogin($username, $password, $userInputCaptcha)
     {
+
         if (!customIsEmpty($username) && !customIsEmpty($password)) {//如果用户用户名和密码都有输入
 
             //检测验证码
@@ -53,6 +54,8 @@ class Login extends Page implements PageWithCaptcha
             }
 
 
+        } else if (!customIsEmpty($username) || !customIsEmpty($password)) {
+            $this->message="用户名或密码填写不完整，请整改后再尝试登陆";
         }
 
 

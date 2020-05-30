@@ -1,9 +1,9 @@
 <?php
-include_once "utilities/PDOAdapter.php";
-include_once "utilities/dbconfig.php";
-include_once "utilities/utilityFunction.php";
-include_once "UploadedImageInfo.class.php";
-include_once "utilities/htmlpurifier-4.12.0/library/HTMLPurifier.auto.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/PDOAdapter.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/dbconfig.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/utilityFunction.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/UploadedImageInfo.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/htmlpurifier-4.12.0/library/HTMLPurifier.auto.php";
 
 class User
 {

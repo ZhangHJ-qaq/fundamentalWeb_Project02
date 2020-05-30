@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once "class/MyPhoto.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/MyPhoto.class.php";
 $myPhoto = new MyPhoto();
 ?>
 <!DOCTYPE html>

@@ -1,5 +1,5 @@
 <?php
-include_once "class/Register.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/Register.php";
 $register = new Register();
 ?>
 <!DOCTYPE html>

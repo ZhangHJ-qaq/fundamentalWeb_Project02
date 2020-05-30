@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once "class/MyFavor.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/MyFavor.class.php";
 $myFavor = new MyFavor();
 ?>
 <!DOCTYPE html>

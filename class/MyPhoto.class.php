@@ -1,10 +1,10 @@
 <?php
-include_once "Page.class.php";
-include_once "SearchRequest.class.php";
-include_once "SearchResult.class.php";
-include_once "PageWithPagination.interface.php";
-include_once "User.class.php";
-include_once "utilities/utilityFunction.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/Page.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/SearchRequest.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/SearchResult.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/PageWithPagination.interface.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/User.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/utilityFunction.php";
 
 class MyPhoto extends Page implements PageWithPagination
 {
@@ -78,7 +78,7 @@ class MyPhoto extends Page implements PageWithPagination
                 echo "<a href='imageDetail.php?imageID=$imageID'><img src=img/small/$path class='thumbnail' alt=$title></a>";
                 echo "<h1>$title</h1>";
                 echo "<p>$desc</p>";
-                echo "<button class='pure-button pure-button-primary' onclick=window.open('upload_edit.php?action=modify&modifyID=$imageID')>修改</button>";
+                echo "<button class='pure-button pure-button-primary' onclick=window.open('upload_edit.php?control=modify&modifyID=$imageID')>修改</button>";
                 $currentPage = $this->searchResult->currentPage;
                 if (!customIsEmpty($this->searchTitle)) {
                     echo "<button class='pure-button pure-button-primary'

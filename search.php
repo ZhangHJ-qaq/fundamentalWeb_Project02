@@ -1,8 +1,8 @@
 <?php
-include_once "utilities/PDOAdapter.php";
-include_once "utilities/dbconfig.php";
-include_once "utilities/utilityFunction.php";
-include_once "class/Search.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/PDOAdapter.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/dbconfig.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/utilityFunction.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/Search.class.php";
 $search = new Search();
 ?>
 

@@ -1,12 +1,12 @@
 <?php
-include_once "Page.class.php";
-include_once "utilities/htmlpurifier-4.12.0/library/HTMLPurifier.auto.php";
-include_once "utilities/utilityFunction.php";
-include_once "utilities/imagefilter.php";
-include_once "class/UploadedImageInfo.class.php";
-include_once "User.class.php";
-include_once "class/PageWithCaptcha.php";
-include_once "class/MyCaptchaBuilder.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/Page.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/htmlpurifier-4.12.0/library/HTMLPurifier.auto.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/utilityFunction.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/imagefilter.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/UploadedImageInfo.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/User.class.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/PageWithCaptcha.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/MyCaptchaBuilder.php";
 
 class Upload extends Page implements PageWithCaptcha
 {
@@ -89,7 +89,7 @@ class Upload extends Page implements PageWithCaptcha
     {
         if ($this->controlForDisplay === 'modify') {
             $modifyID = $_GET['modifyID'];
-            echo "<form class='pure-u-20-24 pure-form' action='upload_edit.php?action=modify&modifyID=$modifyID' method='post' enctype='multipart/form-data'>";
+            echo "<form class='pure-u-20-24 pure-form' action='upload_edit.php?control=modify&modifyID=$modifyID' method='post' enctype='multipart/form-data'>";
         } else {
             echo "<form class='pure-u-20-24 pure-form' action='upload_edit.php' method='post' enctype='multipart/form-data'>";
         }

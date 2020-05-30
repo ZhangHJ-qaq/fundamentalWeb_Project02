@@ -1,5 +1,5 @@
 <?php
-include_once "class/ChangePassword.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/ChangePassword.php";
 $changePassword = new ChangePassword();
 ?>
 
