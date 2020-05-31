@@ -209,8 +209,8 @@ class User
         if ($this->pdoAdapter->isRowCountZero($sql, array($uploadedImageInfo->countrySelect))) {
             return false;
         }
-        $sql = "select GeoNameID from geocities where GeoNameID=?";
-        if ($this->pdoAdapter->isRowCountZero($sql, array($uploadedImageInfo->citySelect))) {
+        $sql = "select GeoNameID from geocities where GeoNameID=? and CountryCodeISO=?";
+        if ($this->pdoAdapter->isRowCountZero($sql, array($uploadedImageInfo->citySelect, $uploadedImageInfo->countrySelect)) && $uploadedImageInfo->citySelect != -1) {
             return false;
         }
 
