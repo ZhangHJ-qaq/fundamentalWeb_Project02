@@ -26,7 +26,7 @@ class Index extends Page
             echo "<h1>$title</h1>";
 
             //首页描述最多显示100个字符
-            $description = substr($description, 0, 100);
+            $description = mb_substr($description, 0, 100);
             echo "<p>$description</p>";
             echo "</div>";
 

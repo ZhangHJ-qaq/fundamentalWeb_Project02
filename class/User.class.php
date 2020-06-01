@@ -202,8 +202,8 @@ class User
         $uploadedImageInfo->countrySelect = $purifier->purify($uploadedImageInfo->countrySelect);
 
         //标题限制最多50个字符，描述最多限制500个字符
-        $uploadedImageInfo->titleInput = substr($uploadedImageInfo->titleInput, 0, 50);
-        $uploadedImageInfo->descInput = substr($uploadedImageInfo->descInput, 0, 500);
+        $uploadedImageInfo->titleInput = mb_substr($uploadedImageInfo->titleInput, 0, 50);
+        $uploadedImageInfo->descInput = mb_substr($uploadedImageInfo->descInput, 0, 500);
 
         $sql = "select ContentID from geocontents where ContentID=?";//在后台检测用户从前端发来的内容，城市，和国家的选项是否合法
         if ($this->pdoAdapter->isRowCountZero($sql, array($uploadedImageInfo->contentSelect))) {

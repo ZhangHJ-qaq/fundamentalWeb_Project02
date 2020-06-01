@@ -118,7 +118,7 @@ class MyFavor extends Page implements PageWithPagination
             echo "<h1>$title</h1>";
 
             //描述最多显示100个字符
-            $desc = substr($desc, 0, 100);
+            $desc = mb_substr($desc, 0, 100);
             echo "<p>$desc</p>";
 
             if (!customIsEmpty($this->searchTitle)) {
