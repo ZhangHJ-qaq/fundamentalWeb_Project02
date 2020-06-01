@@ -77,6 +77,9 @@ class MyPhoto extends Page implements PageWithPagination
                 echo "<div class='imageCard'>";
                 echo "<a href='imageDetail.php?imageID=$imageID'><img src=img/small/$path class='thumbnail' alt=$title></a>";
                 echo "<h1>$title</h1>";
+
+                //描述最多显示100个字符
+                $desc = substr($desc, 0, 100);
                 echo "<p>$desc</p>";
                 echo "<button class='pure-button pure-button-primary' onclick=window.open('upload_edit.php?control=modify&modifyID=$imageID')>修改</button>";
                 $currentPage = $this->searchResult->currentPage;

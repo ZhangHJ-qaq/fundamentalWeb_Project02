@@ -95,6 +95,9 @@ class Search extends Page implements PageWithPagination
                 echo "<div class='imageCard'>";
                 echo "<a href=imageDetail.php?imageID=$imageID><img src=img/small/$path class='thumbnail' alt=$title></a>";
                 echo "<h1>$title</h1>";
+
+                //搜索页描述最多显示100个字符
+                $description = substr($description, 0, 100);
                 echo "<p>$description</p>";
                 echo "</div>";
             }

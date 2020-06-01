@@ -24,6 +24,9 @@ class Index extends Page
             echo "<div class='card pure-u-1-1 pure-u-md-1-2 pure-u-lg-1-3'>";
             echo "<a href=imageDetail.php?imageID=$imageID><img src=img/small/$path alt=$title class='thumbnail pure-u-1-2'></a>";
             echo "<h1>$title</h1>";
+
+            //首页描述最多显示100个字符
+            $description = substr($description, 0, 100);
             echo "<p>$description</p>";
             echo "</div>";
 
@@ -32,6 +35,7 @@ class Index extends Page
 
 
     }
+
     function printHugeImage()
     {
         $imageInfo = $this->pdoAdapter->selectRows("select Title,PATH,ImageID from travelimage order by rand() limit 1 ");

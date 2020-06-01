@@ -116,7 +116,11 @@ class MyFavor extends Page implements PageWithPagination
             echo "<div class='imageCard'>";
             echo "<a href=imageDetail.php?imageID=$imageID><img src=img/small/$path alt=$title class='thumbnail'></a>";
             echo "<h1>$title</h1>";
+
+            //描述最多显示100个字符
+            $desc = substr($desc, 0, 100);
             echo "<p>$desc</p>";
+
             if (!customIsEmpty($this->searchTitle)) {
                 echo "<button class='pure-button-primary pure-button'><a href='myFavor.php?unlikeImageId=$imageID&page=$currentPage&title=$this->searchTitle'>取消收藏</a></button>";
             } else {
