@@ -20,6 +20,8 @@ class MyCaptchaBuilder
             $this->captchaQuestionText = "验证码: $operand1 减 $operand2 结果是?";
 
         } else {
+            $operand1 = rand(1, 20);
+            $operand2 = rand(1, 20);
             $this->captchaAnswer = $operand1 * $operand2;
             $this->captchaQuestionText = "验证码: $operand1 乘 $operand2 结果是?";
 
@@ -33,11 +35,14 @@ class MyCaptchaBuilder
         $operator = '';
         switch ($num) {
             case 0:
-                $operator = "plus";break;
+                $operator = "plus";
+                break;
             case 1:
-                $operator = "minus";break;
+                $operator = "minus";
+                break;
             default:
-                $operator = "times";break;
+                $operator = "times";
+                break;
         }
         return $operator;
 

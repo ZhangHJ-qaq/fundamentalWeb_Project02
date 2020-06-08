@@ -8,13 +8,36 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/htmlpurifier-4.12.0/library
 class User
 {
     private $uid;
+    private $username;
     private $pdoAdapter;
+    public bool $userExists;
 
 
     function __construct($uid, PDOAdapter $pdoAdapter)
     {
-        $this->uid = $uid;
+
         $this->pdoAdapter = $pdoAdapter;
+        $sql = "select * from traveluser where UID=?";
+        $userInfo = $this->pdoAdapter->selectRows($sql, array($uid));
+        if (count($userInfo) === 1) {
+            $this->uid = $userInfo[0]['UID'];
+            $this->username = $userInfo[0]['UserName'];
+            $this->userExists = true;
+        } else {
+            $this->uid = null;
+            $this->username = null;
+            $this->userExists = false;
+        }
+
+
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getUsername()
+    {
+        return $this->username;
     }
 
     function hasImage($imageID)//判断用户是否有这张图片
@@ -28,6 +51,9 @@ class User
 
     function deleteImage($deleteID)//删除图片的逻辑
     {
+        if (!$this->userExists) {
+            return "用户不存在";
+        }
         if ($this->hasImage($deleteID)) {
             $imagePath = $this->pdoAdapter->selectRows("select PATH from travelimage where ImageID=?", array($deleteID))[0]['PATH'];//先得到图像的路径，后面在数据库中删除图片要用
             $this->pdoAdapter->beginTransaction();
@@ -56,6 +82,9 @@ class User
 
     function modifyImage(UploadedImageInfo $uploadedImageInfo, $modifyID)//修改图片的逻辑
     {
+        if (!$this->userExists) {
+            return "用户不存在";
+        }
         $message = '';
         $uploadedImageInfo = $this->checkAndPurifyImageInfo($uploadedImageInfo);
         if ($uploadedImageInfo === false) {
@@ -129,6 +158,9 @@ class User
 
     function uploadImage(UploadedImageInfo $uploadedImageInfo)//上传图片的逻辑
     {
+        if (!$this->userExists) {
+            return "用户不存在";
+        }
         $message = '';
 
         $uploadedImageInfo = $this->checkAndPurifyImageInfo($uploadedImageInfo);
@@ -278,6 +310,9 @@ class User
 
     function unlikeImage($imageID)//取消收藏的逻辑
     {
+        if (!$this->userExists) {
+            return "用户不存在";
+        }
         $message = '';
         if (!$this->hasLikedImage($imageID)) {
             $message = "你还没有收藏这个图片，不能取消收藏";
@@ -291,6 +326,9 @@ class User
 
     function likeImage($imageID)//收藏的逻辑
     {
+        if (!$this->userExists) {
+            return "用户不存在";
+        }
         $message = '';
         if ($this->imageExist($imageID)) {
             if ($this->hasLikedImage($imageID)) {
@@ -322,6 +360,9 @@ class User
 
     public function changePassword($originalUnsaltedPasswordInput, $newPassword1, $newPassword2)
     {
+        if (!$this->userExists) {
+            return "用户不存在";
+        }
         if ($newPassword1 !== $newPassword2) {
             return "两次输入密码不一致";
         }

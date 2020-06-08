@@ -12,13 +12,11 @@ class MyPhoto extends Page implements PageWithPagination
     private $searchRequest;
     private $queryStringForPagination;
     private $message;
-    private $user;
     private $searchTitle;
 
     function __construct()
     {
         parent::__construct();
-        $this->user = new User($_SESSION['uid'], $this->pdoAdapter);
     }
 
 
@@ -37,7 +35,7 @@ class MyPhoto extends Page implements PageWithPagination
     }
 
 
-    function searchMyPhoto($uid, $wantedPage, $title)
+    function searchMyPhoto($wantedPage, $title)
     {
         if (customIsEmpty($title)) {
             $sql = "select ImageID,Title,Description,PATH from travelimage where UID=?";
@@ -46,7 +44,7 @@ class MyPhoto extends Page implements PageWithPagination
                 $wantedPage,
                 $this->pdoAdapter,
                 $sql,
-                array($uid)
+                array($this->user->getUid())
             );
             $this->queryStringForPagination = "?";
         } else {
@@ -56,7 +54,7 @@ class MyPhoto extends Page implements PageWithPagination
                 $wantedPage,
                 $this->pdoAdapter,
                 $sql,
-                array($uid, $title)
+                array($this->user->getUid(), $title)
             );
             $this->queryStringForPagination = "?title=$title";
             $this->searchTitle = $title;
@@ -85,11 +83,11 @@ class MyPhoto extends Page implements PageWithPagination
                 $currentPage = $this->searchResult->currentPage;
                 if (!customIsEmpty($this->searchTitle)) {
                     echo "<button class='pure-button pure-button-primary'
-            onclick=if(confirm('你真的要删除这张图片吗？删除后这张图片将永远消失，其他用户也不能访问这张图片')){window.open('myPhoto.php?deleteID=$imageID&page=$currentPage&title=$this->searchTitle')}>删除</button>";
+            onclick=if(confirm('你真的要删除这张图片吗？删除后这张图片将永远消失，其他用户也不能访问这张图片')){window.open('myPhoto.php?deleteID=$imageID&page=$currentPage&title=$this->searchTitle');window.close()}>删除</button>";
 
                 } else {
                     echo "<button class='pure-button pure-button-primary'
-            onclick=if(confirm('你真的要删除这张图片吗？删除后这张图片将永远消失，其他用户也不能访问这张图片')){window.open('myPhoto.php?deleteID=$imageID&page=$currentPage')}>删除</button>";
+            onclick=if(confirm('你真的要删除这张图片吗？删除后这张图片将永远消失，其他用户也不能访问这张图片')){window.open('myPhoto.php?deleteID=$imageID&page=$currentPage');window.close()}>删除</button>";
 
                 }
                 echo "</div>";

@@ -11,14 +11,12 @@ class MyFavor extends Page implements PageWithPagination
     private $searchResult;
     private $searchRequest;
     private $queryStringForPagination;
-    private $user;
     private $unlikeMessage;
     private $searchTitle;
 
     function __construct()
     {
         parent::__construct();
-        $this->user = new User($_SESSION['uid'], $this->pdoAdapter);
     }
 
 
@@ -71,7 +69,7 @@ class MyFavor extends Page implements PageWithPagination
         }
     }
 
-    function searchFavoredImage($wantedPage, $uid, $title)//搜索我收藏的照片
+    function searchFavoredImage($wantedPage, $title)//搜索我收藏的照片
     {
         if (!customIsEmpty($title)) {
             $sql = "select travelimage.ImageID,Title,Description,PATH 
@@ -82,7 +80,7 @@ class MyFavor extends Page implements PageWithPagination
                 $wantedPage,
                 $this->pdoAdapter,
                 $sql,
-                array($uid, $title)
+                array($this->user->getUid(), $title)
             );
             $this->queryStringForPagination = "?title=$title";
             $this->searchTitle = $title;
@@ -96,7 +94,7 @@ class MyFavor extends Page implements PageWithPagination
                 $wantedPage,
                 $this->pdoAdapter,
                 $sql,
-                array($uid)
+                array($this->user->getUid())
             );
             $this->queryStringForPagination = "?";
 

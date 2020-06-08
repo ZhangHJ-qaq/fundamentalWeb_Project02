@@ -7,7 +7,6 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/class/PageWithCaptcha.php";
 
 class ChangePassword extends Page implements PageWithCaptcha
 {
-    private $user;
     private $message;
     private $myCaptchaBuilder;
 
@@ -15,7 +14,6 @@ class ChangePassword extends Page implements PageWithCaptcha
     {
         parent::__construct();
         session_start();
-        $this->user = new User($_SESSION['uid'], $this->pdoAdapter);
         $this->myCaptchaBuilder = new MyCaptchaBuilder();
 
 

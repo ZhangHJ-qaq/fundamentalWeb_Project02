@@ -8,13 +8,11 @@ class ImageDetail extends Page
 {
     private $message;
     private $imageInfo;
-    private $user;
     private $getImage = false;
 
     function __construct()
     {
         parent::__construct();
-        $this->user = new User($_SESSION['uid'], $this->pdoAdapter);
     }
 
 
@@ -112,9 +110,9 @@ class ImageDetail extends Page
             } else {
                 $imageID = $this->imageInfo[0]['ImageID'];
                 if ($this->user->hasLikedImage($this->imageInfo[0]['ImageID'])) {//如果用户收藏了图片，显示取消收藏的按钮
-                    echo "<button class='pure-u-1 pure-button pure-button-primary' onclick=window.open('imageDetail.php?imageID=$imageID&action=unlike')>取消收藏</button>";
+                    echo "<button class='pure-u-1 pure-button pure-button-primary' onclick=window.open('imageDetail.php?imageID=$imageID&action=unlike');window.close()>取消收藏</button>";
                 } else {//反之，显示收藏的按钮
-                    echo "<button class='pure-u-1 pure-button pure-button-primary' onclick=window.open('imageDetail.php?imageID=$imageID&action=like')>收藏</button>";
+                    echo "<button class='pure-u-1 pure-button pure-button-primary' onclick=window.open('imageDetail.php?imageID=$imageID&action=like');window.close()>收藏</button>";
                 }
             }
             if (isset($this->message)) {//如果有信息，则输出

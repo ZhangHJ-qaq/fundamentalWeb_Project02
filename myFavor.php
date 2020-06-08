@@ -1,5 +1,4 @@
 <?php
-session_start();
 include_once $_SERVER['DOCUMENT_ROOT'] . "/class/MyFavor.class.php";
 $myFavor = new MyFavor();
 ?>
@@ -49,7 +48,7 @@ $myFavor->printHeaderNeedLogin();
                 $myFavor->printUnlikeInfo();
 
 
-                $myFavor->searchFavoredImage($_GET['page'], $_SESSION['uid'], $_GET['title']);
+                $myFavor->searchFavoredImage($_GET['page'], $_GET['title']);
                 $myFavor->printSearchResult();
 
                 //当用户的照片为空时，打印出空照片的提示

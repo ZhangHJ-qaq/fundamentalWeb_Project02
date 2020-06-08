@@ -1,39 +1,34 @@
 <?php
-include_once  $_SERVER['DOCUMENT_ROOT'] . "/utilities/PDOAdapter.php";
-include_once  $_SERVER['DOCUMENT_ROOT'] . "/utilities/dbconfig.php";
-include_once  $_SERVER['DOCUMENT_ROOT'] . "/utilities/utilityFunction.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/PDOAdapter.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/dbconfig.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/utilityFunction.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/class/User.class.php";
 
 class Page//所有页面的基类
 {
     public $pdoAdapter;
+    public $user;
 
     function __construct()
     {
+        session_start();
 
         $this->pdoAdapter = new PDOAdapter(HEADER, DBACCOUNT, DBPASSWORD, DBNAME);
-
+        $this->user = new User($_SESSION['uid'], $this->pdoAdapter);
     }
 
     function printHeaderNoNeedLogin()//打印出不需要登陆的header
     {
         echo "<header>";
         session_start();
-        $userInfo = $this->getUserInfo($_SESSION['uid']);
-        if ($userInfo == false) {
-            $hasLoggedIn = false;
-        } else {
-            $hasLoggedIn = true;
-            $uid = $userInfo['uid'];
-            $username = $userInfo['username'];
-        }
-        if ($hasLoggedIn) {
-            echo "<span>$username</span>";
+        if ($this->user->userExists) {
+            echo "<span>{$this->user->getUsername()}</span>";
         }
         echo " <a href='index.php' id='headerHome'>主页</a>";
         echo "<a href='browser.php' id='headerBrowse'>浏览</a>";
         echo "<a href='search.php' id='headerSearch'>搜索</a>";
 
-        if ($hasLoggedIn) {
+        if ($this->user->userExists) {
             echo "<div id='personalCenter'>
                 个人中心
         <div id='headerDropdownMenu'>
@@ -48,31 +43,25 @@ class Page//所有页面的基类
             echo "<a href='login.php' id='login'>登录</a>";
         }
         echo "</header>";
-        return $hasLoggedIn;
+        return $this->user->userExists;
     }
 
     function printHeaderNeedLogin()
     {//打印出需要登陆的header 如果用户不登陆，会被赶去登陆
         echo "<header>";
         session_start();
-        $userInfo = $this->getUserInfo($_SESSION['uid']);
-        if ($userInfo == false) {
-            $hasLoggedIn = false;
+        if (!$this->user->userExists) {
             header("location:login.php");
             exit();
-        } else {
-            $hasLoggedIn = true;
-            $uid = $userInfo['uid'];
-            $username = $userInfo['username'];
         }
-        if ($hasLoggedIn) {
-            echo "<span>$username</span>";
+        if ($this->user->userExists) {
+            echo "<span>{$this->user->getUsername()}</span>";
         }
         echo " <a href='index.php' id='headerHome'>主页</a>";
         echo "<a href='browser.php' id='headerBrowse'>浏览</a>";
         echo "<a href='search.php' id='headerSearch'>搜索</a>";
 
-        if ($hasLoggedIn) {
+        if ($this->user->userExists) {
             echo "<div id='personalCenter'>
                 个人中心
         <div id='headerDropdownMenu'>
@@ -87,7 +76,7 @@ class Page//所有页面的基类
             echo "<a href='login.php' id='login'>登录</a>";
         }
         echo "</header>";
-        return $hasLoggedIn;
+        return $this->user->userExists;
     }
 
     function printContentOptions($defaultContentID = null)
@@ -130,18 +119,4 @@ class Page//所有页面的基类
         $this->pdoAdapter = null;
     }
 
-    private function getUserInfo($uid)
-    {
-        $userInfo = $this->pdoAdapter->selectRows("select UID,UserName from traveluser where UID=?", array($uid));
-        if (count($userInfo) === 1) {
-            $userInfo = $userInfo[0];
-            $username = $userInfo['UserName'];
-            $uid = $userInfo['UID'];
-            return array("uid" => $uid, "username" => $username);
-        } else {
-            return false;
-        }
-
-
-    }
 }

@@ -14,7 +14,6 @@ class Upload extends Page implements PageWithCaptcha
     private $request;//判断用户的请求是上传还是修改
     private $modifyID;
     private $uploadedOrModifyImageInfo;//上传得到的信息
-    private $user;
     private $message;
     public $originalImageInfo;
     private $myCaptchaBuilder;
@@ -32,7 +31,6 @@ class Upload extends Page implements PageWithCaptcha
             $_POST['countrySelect'],
             $_POST['citySelect']
         );
-        $this->user = new User($_SESSION['uid'], $this->pdoAdapter);
         $this->modifyID = $_POST['modifyID'];
         $this->purifyControlForDisplay();
         $this->myCaptchaBuilder = new MyCaptchaBuilder();
