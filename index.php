@@ -42,7 +42,7 @@ $index->printHeaderNoNeedLogin();
 
 </main>
 <footer>
-    ZHJ制作 19302010021 本网站由<a href="https://purecss.net">Pure.css</a>驱动
+    ZHJ制作 19302010021 本网站由<a href="https://purecss.net">Pure.css</a>提供强力支持
 </footer>
 <div id="fixedButton">
     <button class="pure-button-primary pure-button" id="refresh">刷新页面</button>
