@@ -219,6 +219,14 @@ class User
 
     private function checkAndPurifyImageInfo(UploadedImageInfo &$uploadedImageInfo)
     {
+
+        $purifier = new HTMLPurifier();
+        $uploadedImageInfo->titleInput = $purifier->purify($uploadedImageInfo->titleInput);
+        $uploadedImageInfo->descInput = $purifier->purify($uploadedImageInfo->descInput);
+        $uploadedImageInfo->contentSelect = $purifier->purify($uploadedImageInfo->contentSelect);
+        $uploadedImageInfo->citySelect = $purifier->purify($uploadedImageInfo->citySelect);
+        $uploadedImageInfo->countrySelect = $purifier->purify($uploadedImageInfo->countrySelect);
+
         if (customIsEmpty($uploadedImageInfo->titleInput) ||
             customIsEmpty($uploadedImageInfo->descInput) ||
             customIsEmpty($uploadedImageInfo->citySelect) ||
@@ -227,12 +235,6 @@ class User
         ) {
             return false;
         }//检测每个信息是否为空
-        $purifier = new HTMLPurifier();
-        $uploadedImageInfo->titleInput = $purifier->purify($uploadedImageInfo->titleInput);
-        $uploadedImageInfo->descInput = $purifier->purify($uploadedImageInfo->descInput);
-        $uploadedImageInfo->contentSelect = $purifier->purify($uploadedImageInfo->contentSelect);
-        $uploadedImageInfo->citySelect = $purifier->purify($uploadedImageInfo->citySelect);
-        $uploadedImageInfo->countrySelect = $purifier->purify($uploadedImageInfo->countrySelect);
 
         //标题限制最多50个字符，描述最多限制500个字符
         $uploadedImageInfo->titleInput = mb_substr($uploadedImageInfo->titleInput, 0, 50);
