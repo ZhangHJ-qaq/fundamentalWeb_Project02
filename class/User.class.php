@@ -183,7 +183,8 @@ class User
         (ImageID,Title, Description, UID, PATH, ContentID,CityCode,CountryCodeISO)
         values (?,?,?,?,?,?,?,?)";
         $resultOfInsertRow = $this->pdoAdapter->insertARow($sql,
-            array($imageID, $_POST['titleInput'], $_POST['descInput'], $this->uid, $newFileName, $_POST['contentSelect'], $_POST['citySelect'], $_POST['countrySelect']));
+            array($imageID, $uploadedImageInfo->titleInput,$uploadedImageInfo->descInput, $this->uid, $newFileName, $uploadedImageInfo->contentSelect, $uploadedImageInfo->citySelect, $uploadedImageInfo->countrySelect));
+
 
         $resultOfCopy = copy($_FILES['imageInput']['tmp_name'], "img/large/" . $newFileName);//将图片原封不动地拷贝到大图片的文件夹内
 
