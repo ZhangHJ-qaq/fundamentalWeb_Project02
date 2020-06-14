@@ -3,16 +3,19 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/class/Page.class.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/class/SearchRequest.class.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/class/SearchResult.class.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/class/PageWithPagination.interface.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/htmlpurifier-4.12.0/library/HTMLPurifier.php";
 
 class Search extends Page implements PageWithPagination
 {
     private $searchRequest;
     private $searchResult;
     private $queryStringForPagination;
+    private $htmlPurifier;
 
     function __construct()
     {
         parent::__construct();
+        $this->htmlPurifier = new HTMLPurifier();
     }
 
 
@@ -138,5 +141,12 @@ class Search extends Page implements PageWithPagination
         } else {
             echo "<input type='text' name='descInput' id='descInput'>";
         }
+    }
+
+    function purifyInput()
+    {
+        $_GET['titleInput'] = $this->htmlPurifier->purify($_GET['titleInput']);
+        $_GET['descInput'] = $this->htmlPurifier->purify($_GET['descInput']);
+
     }
 }

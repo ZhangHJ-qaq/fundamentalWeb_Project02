@@ -1,6 +1,7 @@
 <?php
 
 include_once $_SERVER['DOCUMENT_ROOT'] . "/class/Browser.class.php";
+
 $browser = new Browser();
 
 ?>
@@ -23,7 +24,7 @@ $browser = new Browser();
 <?php
 //打印不需要登陆的header
 $browser->printHeaderNoNeedLogin();
-
+$browser->purifyInput();
 ?>
 
 <div class="pure-g">
@@ -37,7 +38,7 @@ $browser->printHeaderNoNeedLogin();
                         <div class="wrapper pure-g">
                             <!--                            <input type="text" class="pure-u-2-3" name="title">-->
                             <?php
-                            $browser->printTitleInput($_GET['title'])
+                            $browser->printTitleInput()
                             ?>
                             <button class="pure-button pure-button-primary pure-u-1-3">搜索</button>
                         </div>
@@ -111,7 +112,7 @@ $browser->printHeaderNoNeedLogin();
                 </form>
                 <div id="box" class="pure-g hasShadow" style="text-align: center">
                     <?php
-                    if (isset($_GET['title'])) {//如果用户使用标题搜索
+                    if (!customIsEmpty($_GET['title'])) {//如果用户使用标题搜索
                         $browser->searchByTitle($_GET['title'], $_GET['page']);
                         $browser->printSearchResult();
                     } else if (!customIsEmpty($_GET['content']) || !customIsEmpty($_GET['countryISO']) || !customIsEmpty($_GET['cityCode'])) {

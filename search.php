@@ -23,6 +23,7 @@ $search = new Search();
 
 <?php
 $search->printHeaderNoNeedLogin();
+$search->purifyInput();
 ?>
 
 <div class="wrapper pure-g">
