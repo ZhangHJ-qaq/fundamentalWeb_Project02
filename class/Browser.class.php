@@ -15,7 +15,7 @@ class Browser extends Page implements PageWithPagination
     function __construct()
     {
         parent::__construct();
-        $this->htmlPurifier=new HTMLPurifier();
+        $this->htmlPurifier = new HTMLPurifier();
     }
 
     function printHotContents()
@@ -145,14 +145,23 @@ class Browser extends Page implements PageWithPagination
             $currentPage = ($this->searchResult)->currentPage;
             $maxNumOfPage = ($this->searchResult)->maxNumOfPage;
 
-            $startPage = max(1, $currentPage - 5);
-            $endPage = min($maxNumOfPage, $currentPage + 4);
 
             if ($currentPage > 1) {
                 $previousPage = $currentPage - 1;
                 $href = "browser.php" . $this->queryStringForPagination . "&page=$previousPage";
                 echo "<a href='$href'>上一页</a>";
             }
+
+            //得到页码打印的起始页
+            $startPage = max(1, $currentPage - 5);//该页前面显示的页码数目不超过5页
+
+            $distance1 = $currentPage - $startPage;//该页前面显示的页码数目
+            $distance2 = 10 - 1 - $distance1;//该页后面显示的最大页码数目
+
+            //得到页码打印的中止页
+            $endPage = min($currentPage + $distance2, $maxNumOfPage);
+
+
             for ($i = $startPage; $i <= $endPage; $i++) {
                 if ($currentPage == $i) {
                     $href = "browser.php" . $this->queryStringForPagination . "&page=$i";
@@ -167,6 +176,7 @@ class Browser extends Page implements PageWithPagination
                 $href = "browser.php" . $this->queryStringForPagination . "&page=$nextPage";
                 echo "<a href='$href'>下一页</a>";
             }
+            echo "<span>共{$maxNumOfPage}页</span>";
         }
     }
 
