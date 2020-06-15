@@ -86,7 +86,7 @@ footer > a {
     text-align: center;
     background-color: white;
 }
-.pagination>a{
+.pagination>a,.pagination>span{
     color: black;
     text-decoration: none;
     margin-left: 5px;

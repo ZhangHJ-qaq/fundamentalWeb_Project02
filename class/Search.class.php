@@ -21,7 +21,7 @@ class Search extends Page implements PageWithPagination
 
     function printPagination()//打印分页
     {
-        if ($this->searchResult->needPagination) {
+        if ($this->searchResult !== null && $this->searchResult->needPagination) {
             $currentPage = ($this->searchResult)->currentPage;
             $maxNumOfPage = ($this->searchResult)->maxNumOfPage;
 
@@ -31,8 +31,14 @@ class Search extends Page implements PageWithPagination
                 echo "<a href='$href'>上一页</a>";
             }
 
-            $startPage = max(1, $currentPage - 5);
-            $endPage = min($maxNumOfPage, $currentPage + 4);
+            //得到页码打印的起始页
+            $startPage = max(1, $currentPage - 5);//该页前面显示的页码数目不超过5页
+
+            $distance1 = $currentPage - $startPage;//该页前面显示的页码数目
+            $distance2 = 10 - 1 - $distance1;//该页后面显示的最大页码数目
+
+            //得到页码打印的中止页
+            $endPage = min($currentPage + $distance2, $maxNumOfPage);
 
 
             for ($i = $startPage; $i <= $endPage; $i++) {
@@ -49,6 +55,8 @@ class Search extends Page implements PageWithPagination
                 $href = "search.php" . $this->queryStringForPagination . "&page=$nextPage";
                 echo "<a href='$href'>下一页</a>";
             }
+            echo "<span>共{$maxNumOfPage}页</span>";
+
         }
         // TODO: Implement printPagination() method.
     }
