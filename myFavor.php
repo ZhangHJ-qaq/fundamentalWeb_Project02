@@ -17,6 +17,7 @@ $myFavor = new MyFavor();
 <body>
 <?php
 $myFavor->printHeaderNeedLogin();
+$myFavor->purifyTitleInput();
 ?>
 <div class="wrapper pure-g">
     <div class="pure-u-2-24"></div>

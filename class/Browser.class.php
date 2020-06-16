@@ -28,8 +28,8 @@ class Browser extends Page implements PageWithPagination
                         order by count(travelimage.ContentID) desc limit 3";
         $hotContentList = $this->pdoAdapter->selectRows($sql);
         for ($i = 0; $i <= count($hotContentList) - 1; $i++) {
-            $contentName = $hotContentList[$i]['ContentName'];
-            $contentID = $hotContentList[$i]['ContentID'];
+            $contentName = htmlspecialchars($hotContentList[$i]['ContentName'], ENT_QUOTES);
+            $contentID = htmlspecialchars($hotContentList[$i]['ContentID'], ENT_QUOTES);
             echo "<a href='browser.php?content=$contentID' class='pure-u-1'>$contentName</a>";
         }
     }//打印热门内容
@@ -42,8 +42,8 @@ class Browser extends Page implements PageWithPagination
                         order by count(CountryCodeISO) desc limit 5";
         $hotCountryList = $this->pdoAdapter->selectRows($sql);
         for ($i = 0; $i <= count($hotCountryList) - 1; $i++) {
-            $countryName = $hotCountryList[$i]['CountryName'];
-            $countryCodeISO = $hotCountryList[$i]['CountryCodeISO'];
+            $countryName = htmlspecialchars($hotCountryList[$i]['CountryName'], ENT_QUOTES);
+            $countryCodeISO = htmlspecialchars($hotCountryList[$i]['CountryCodeISO'], ENT_QUOTES);
             echo "<a href='browser.php?countryISO=$countryCodeISO' class='pure-u-1'>$countryName</a>";
         }
     }//打印热门国家
@@ -56,8 +56,8 @@ class Browser extends Page implements PageWithPagination
                         order by count(CityCode) desc limit 5";
         $hotCityList = $this->pdoAdapter->selectRows($sql);
         for ($i = 0; $i <= count($hotCityList) - 1; $i++) {
-            $cityName = $hotCityList[$i]['AsciiName'];
-            $cityCode = $hotCityList[$i]['CityCode'];
+            $cityName = htmlspecialchars($hotCityList[$i]['AsciiName'], ENT_QUOTES);
+            $cityCode = htmlspecialchars($hotCityList[$i]['CityCode'], ENT_QUOTES);
             echo "<a href='browser.php?cityCode=$cityCode' class='pure-u-1'>$cityName</a>";
         }
     }//打印热门城市
@@ -129,9 +129,9 @@ class Browser extends Page implements PageWithPagination
         $imageInfoList = $this->searchResult->imageInfoList;
         if ($imageInfoList !== null && count($imageInfoList) !== 0) {
             for ($i = 0; $i <= count($imageInfoList) - 1; $i++) {
-                $title = $imageInfoList[$i]['Title'];
-                $imageID = $imageInfoList[$i]['ImageID'];
-                $path = $imageInfoList[$i]['PATH'];
+                $title = htmlspecialchars($imageInfoList[$i]['Title'], ENT_QUOTES);
+                $imageID = htmlspecialchars($imageInfoList[$i]['ImageID'], ENT_QUOTES);
+                $path = htmlspecialchars($imageInfoList[$i]['PATH'], ENT_QUOTES);
                 echo "<a href='imageDetail.php?imageID=$imageID' class='pure-u-1-2 pure-u-md-1-3 pure-u-lg-1-4'><img src=img/small/$path class='thumbnail' alt=$title></a>";
             }
         } else {
@@ -184,6 +184,7 @@ class Browser extends Page implements PageWithPagination
     {
         if (!customIsEmpty($defaultCityCode)) {
             $cityName = $this->pdoAdapter->selectRows("select AsciiName from geocities where GeoNameID=?", array($defaultCityCode))[0]['AsciiName'];
+            $cityName = htmlspecialchars($cityName, ENT_QUOTES);
             if (!customIsEmpty($cityName)) {//如果根据cityCode得到了cityName
                 echo "<option value=$defaultCityCode selected>$cityName</option>";
             }

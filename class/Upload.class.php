@@ -86,7 +86,7 @@ class Upload extends Page implements PageWithCaptcha
     function printFormHead()
     {
         if ($this->controlForDisplay === 'modify') {
-            $modifyID = $_GET['modifyID'];
+            $modifyID = htmlspecialchars($_GET['modifyID'], ENT_QUOTES);
             echo "<form class='pure-u-20-24 pure-form' action='upload_edit.php?control=modify&modifyID=$modifyID' method='post' enctype='multipart/form-data'>";
         } else {
             echo "<form class='pure-u-20-24 pure-form' action='upload_edit.php' method='post' enctype='multipart/form-data'>";
@@ -105,7 +105,7 @@ class Upload extends Page implements PageWithCaptcha
         //这两个input是“隐形”的，功能是在提交表单之后在后端判断用户是上传图片还是修改已有的图片
         if ($this->controlForDisplay === 'modify') {
             echo "<input name='request' value='modify' style='display: none'>";
-            $modifyID = $_GET['modifyID'];
+            $modifyID = htmlspecialchars($_GET['modifyID'], ENT_QUOTES);
             echo "<input name='modifyID' value=$modifyID style='display:none'>";
         } else {
             echo "<input name='request' value='upload' style='display: none'>";
@@ -117,7 +117,7 @@ class Upload extends Page implements PageWithCaptcha
         if ($this->controlForDisplay === 'modify') {//如果用户修改图片则从数据库中读取图片 生成图片预览
             $sql = "select Title,Description,ContentID,travelimage.CountryCodeISO,CityCode,PATH,AsciiName from travelimage inner join geocities on CityCode=GeoNameID where ImageID=? and UID=?";
             $this->originalImageInfo = $this->pdoAdapter->selectRows($sql, array($_GET['modifyID'], $_SESSION['uid']))[0];
-            $path = $this->originalImageInfo['PATH'];
+            $path = htmlspecialchars($this->originalImageInfo['PATH'], ENT_QUOTES);
             echo "<img alt='' src='img/medium/$path' style='max-width: 100%'>";
         }
     }
@@ -125,7 +125,7 @@ class Upload extends Page implements PageWithCaptcha
     function printImageTitle()
     {
         if ($this->controlForDisplay === "modify") {//如果用户是编辑图片，则从数据库中读出原有的数据并填充
-            $title = $this->originalImageInfo['Title'];
+            $title = htmlspecialchars($this->originalImageInfo['Title'], ENT_QUOTES);
             echo "<input name='titleInput' id='titleInput' class='pure-u-1' value=$title>";
         } else {
             echo "<input name='titleInput' id='titleInput' class='pure-u-1'>";
@@ -135,7 +135,7 @@ class Upload extends Page implements PageWithCaptcha
     function printImageDesc()
     {
         if ($this->controlForDisplay === "modify") {
-            $desc = $this->originalImageInfo['Description'];
+            $desc = htmlspecialchars($this->originalImageInfo['Description'], ENT_QUOTES);
             echo "<textarea name='descInput' id='descInput' class='pure-u-1'>$desc</textarea>";
         } else {
             echo "<textarea name='descInput' id='descInput' class='pure-u-1'></textarea>";
@@ -145,8 +145,8 @@ class Upload extends Page implements PageWithCaptcha
     function printCityOption()
     {
         if ($this->controlForDisplay === 'modify') {
-            $cityCode = $this->originalImageInfo['CityCode'];
-            $AsciiName = $this->originalImageInfo['AsciiName'];
+            $cityCode = htmlspecialchars($this->originalImageInfo['CityCode'], ENT_QUOTES);
+            $AsciiName = htmlspecialchars($this->originalImageInfo['AsciiName'], ENT_QUOTES);
             echo "<option value='$cityCode' selected>$AsciiName</option>";
         }
     }

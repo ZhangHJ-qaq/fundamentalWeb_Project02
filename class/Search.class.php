@@ -99,10 +99,10 @@ class Search extends Page implements PageWithPagination
         $imageInfoList = $this->searchResult->imageInfoList;
         if ($imageInfoList !== null && count($imageInfoList) !== 0) {
             for ($i = 0; $i <= count($imageInfoList) - 1; $i++) {
-                $imageID = $imageInfoList[$i]['ImageID'];
-                $title = $imageInfoList[$i]['Title'];
-                $description = $imageInfoList[$i]['Description'];
-                $path = $imageInfoList[$i]['PATH'];
+                $imageID = htmlspecialchars($imageInfoList[$i]['ImageID'], ENT_QUOTES);
+                $title = htmlspecialchars($imageInfoList[$i]['Title'], ENT_QUOTES);
+                $description = htmlspecialchars($imageInfoList[$i]['Description'], ENT_QUOTES);
+                $path = htmlspecialchars($imageInfoList[$i]['PATH'], ENT_QUOTES);
                 echo "<div class='imageCard'>";
                 echo "<a href=imageDetail.php?imageID=$imageID><img src=img/small/$path class='thumbnail' alt=$title></a>";
                 echo "<h1>$title</h1>";

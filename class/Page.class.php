@@ -22,7 +22,8 @@ class Page//所有页面的基类
         echo "<header>";
         session_start();
         if ($this->user->userExists) {
-            echo "<span>{$this->user->getUsername()}</span>";
+            $purifiedUsername = htmlspecialchars($this->user->getUsername(), ENT_QUOTES);
+            echo "<span>{$purifiedUsername}</span>";
         }
         echo " <a href='index.php' id='headerHome'>主页</a>";
         echo "<a href='browser.php' id='headerBrowse'>浏览</a>";
@@ -55,7 +56,8 @@ class Page//所有页面的基类
             exit();
         }
         if ($this->user->userExists) {
-            echo "<span>{$this->user->getUsername()}</span>";
+            $purifiedUsername = htmlspecialchars($this->user->getUsername(), ENT_QUOTES);
+            echo "<span>{$purifiedUsername}</span>";
         }
         echo " <a href='index.php' id='headerHome'>主页</a>";
         echo "<a href='browser.php' id='headerBrowse'>浏览</a>";
@@ -84,8 +86,8 @@ class Page//所有页面的基类
         echo "<option value='' >选择内容</option>";
         $contentList = $this->pdoAdapter->selectRows("select ContentID,ContentName from geocontents order by ContentID desc ");
         for ($i = 0; $i <= count($contentList) - 1; $i++) {
-            $contentID = $contentList[$i]['ContentID'];
-            $contentName = $contentList[$i]['ContentName'];
+            $contentID = htmlspecialchars($contentList[$i]['ContentID'], ENT_QUOTES);
+            $contentName = htmlspecialchars($contentList[$i]['ContentName'], ENT_QUOTES);
             if ($contentID === $defaultContentID && !customIsEmpty($defaultContentID)) {
                 echo "<option value='$contentID' selected>$contentName</option>";
             } else {
@@ -101,8 +103,8 @@ class Page//所有页面的基类
         echo "<option value=''>选择国家</option>";
         $countryList = $this->pdoAdapter->selectRows("select ISO,CountryName from geocountries where ISO!=-2 order by CountryName asc ");
         for ($i = 0; $i <= count($countryList) - 1; $i++) {
-            $ISO = $countryList[$i]['ISO'];
-            $countryName = $countryList[$i]['CountryName'];
+            $ISO = htmlspecialchars($countryList[$i]['ISO'], ENT_QUOTES);
+            $countryName = htmlspecialchars($countryList[$i]['CountryName'], ENT_QUOTES);
             if ($defaultCountryISO === $ISO && !customIsEmpty($defaultCountryISO)) {
                 echo "<option value=$ISO selected>$countryName</option>";
             } else {

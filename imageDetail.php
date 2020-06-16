@@ -19,7 +19,7 @@ $imageDetail = new ImageDetail();
 </head>
 <body>
 <?php
-$hasLoggedIn = $imageDetail->printHeaderNoNeedLogin();
+$imageDetail->printHeaderNoNeedLogin();
 ?>
 <div class="wrapper pure-g">
     <div class="pure-u-2-24"></div>
@@ -29,7 +29,7 @@ $hasLoggedIn = $imageDetail->printHeaderNoNeedLogin();
                 <div class="wrapper pure-g" id="imageWrapper">
                 <?php
                 //收藏/取消收藏的逻辑（请求是否合法在user类中完成）
-                $imageDetail->likeUnlike($_GET['imageID'], $_GET['action'], $hasLoggedIn);
+                $imageDetail->likeUnlike($_GET['imageID'], $_GET['action']);
 
                 $imageDetail->searchImage($_GET['imageID']);
                 $imageDetail->printBigImage();
@@ -43,7 +43,7 @@ $hasLoggedIn = $imageDetail->printHeaderNoNeedLogin();
                         <?php
 
                         $imageDetail->printImageInfo();
-                        $imageDetail->printButtonAndMessage($hasLoggedIn);
+                        $imageDetail->printButtonAndMessage();
 
 
                         ?>

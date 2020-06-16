@@ -16,18 +16,18 @@ class ImageDetail extends Page
     }
 
 
-    function likeUnlike($imageID, $action, $hasLoggedIn)
+    function likeUnlike($imageID, $action)
     {
         if ($this->imageExist($imageID)) {
             if ($action === 'like') {//判断用户是否有给出收藏请求
-                if ($hasLoggedIn) {//如果用户已经登录
+                if ($this->user->userExists) {//如果用户已经登录
                     $this->message = $this->user->likeImage($imageID);
                 } else {
                     $this->message = "未登录的用户不可以收藏图片";
                 }
 
             } elseif ($action === 'unlike') {//判断用户是否给出取消收藏请求
-                if ($hasLoggedIn) {//如果用户已经登录
+                if ($this->user->userExists) {//如果用户已经登录
                     $this->message = $this->user->unlikeImage($imageID);
                 } else {
                     $this->message = "未登录的用户不可以取消收藏图片";
@@ -84,14 +84,14 @@ class ImageDetail extends Page
     function printImageInfo()
     {
         if ($this->getImage) {
-            $title = $this->imageInfo[0]['Title'];
-            $username = $this->imageInfo[0]['UserName'];
-            $desc = $this->imageInfo[0]['Description'];
-            $cityName = $this->imageInfo[0]['AsciiName'];
-            $content = $this->imageInfo[0]['ContentName'];
-            $countryName = $this->imageInfo[0]['CountryName'];
-            $imageID = $this->imageInfo[0]['ImageID'];
-            $numOfFavor = $this->getNumOfFavor($imageID);
+            $title = htmlspecialchars($this->imageInfo[0]['Title'], ENT_QUOTES);
+            $username = htmlspecialchars($this->imageInfo[0]['UserName'], ENT_QUOTES);
+            $desc = htmlspecialchars($this->imageInfo[0]['Description'], ENT_QUOTES);
+            $cityName = htmlspecialchars($this->imageInfo[0]['AsciiName'], ENT_QUOTES);
+            $content = htmlspecialchars($this->imageInfo[0]['ContentName'], ENT_QUOTES);
+            $countryName = htmlspecialchars($this->imageInfo[0]['CountryName'], ENT_QUOTES);
+            $imageID = htmlspecialchars($this->imageInfo[0]['ImageID'], ENT_QUOTES);
+            $numOfFavor = htmlspecialchars($this->getNumOfFavor($imageID), ENT_QUOTES);
             echo "<h1 class='pure-u-1'>$title</h1>";
             echo "<div class='pure-u-1'>作者:$username</div>";
             echo "<div class='pure-u-1'>内容:$content</div>";
@@ -102,10 +102,10 @@ class ImageDetail extends Page
         }
     }//打印图片的信息
 
-    function printButtonAndMessage($hasLoggedIn)
+    function printButtonAndMessage()
     {
         if ($this->getImage) {
-            if (!$hasLoggedIn) {//如果用户没有登录，则提示用户登录以后才能收藏
+            if (!$this->user->userExists) {//如果用户没有登录，则提示用户登录以后才能收藏
                 echo "<button class='pure-u-1 pure-button pure-button-primary'><a class='pure-u-1' href='login.php'>想要收藏这张照片？登录！</a></button>";
             } else {
                 $imageID = $this->imageInfo[0]['ImageID'];

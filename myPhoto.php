@@ -25,7 +25,7 @@ $myPhoto->printHeaderNeedLogin();
 <?php
 
 $myPhoto->deleteImage($_GET['deleteID']);
-
+$myPhoto->purifyTitleInput();
 
 ?>
 <div class="wrapper pure-g">
@@ -53,7 +53,7 @@ $myPhoto->deleteImage($_GET['deleteID']);
                 //打印出删除照片结果的信息
                 $myPhoto->printDeleteMessage();
 
-                $myPhoto->searchMyPhoto($_GET['page'],$_GET['title']);
+                $myPhoto->searchMyPhoto($_GET['page'], $_GET['title']);
                 $myPhoto->printSearchResult();
 
                 //如果用户没有照片，打印出没有照片的提示

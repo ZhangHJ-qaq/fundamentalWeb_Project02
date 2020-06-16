@@ -5,6 +5,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/class/SearchResult.class.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/class/PageWithPagination.interface.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/class/User.class.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/utilityFunction.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/htmlpurifier-4.12.0/library/HTMLPurifier.php";
 
 class MyFavor extends Page implements PageWithPagination
 {
@@ -13,10 +14,13 @@ class MyFavor extends Page implements PageWithPagination
     private $queryStringForPagination;
     private $unlikeMessage;
     private $searchTitle;
+    private $htmlPurifier;
+
 
     function __construct()
     {
         parent::__construct();
+        $this->htmlPurifier = new HTMLPurifier();
     }
 
 
@@ -115,10 +119,10 @@ class MyFavor extends Page implements PageWithPagination
         $imageInfoList = $this->searchResult->imageInfoList;
         $currentPage = $this->searchResult->currentPage;
         for ($i = 0; $i <= count($imageInfoList) - 1; $i++) {
-            $imageID = $imageInfoList[$i]['ImageID'];
-            $path = $imageInfoList[$i]['PATH'];
-            $title = $imageInfoList[$i]['Title'];
-            $desc = $imageInfoList[$i]['Description'];
+            $imageID = htmlspecialchars($imageInfoList[$i]['ImageID'], ENT_QUOTES);
+            $path = htmlspecialchars($imageInfoList[$i]['PATH'], ENT_QUOTES);
+            $title = htmlspecialchars($imageInfoList[$i]['Title'], ENT_QUOTES);
+            $desc = htmlspecialchars($imageInfoList[$i]['Description'], ENT_QUOTES);
             echo "<div class='imageCard'>";
             echo "<a href=imageDetail.php?imageID=$imageID><img src=img/small/$path alt=$title class='thumbnail'></a>";
             echo "<h1>$title</h1>";
@@ -150,6 +154,13 @@ class MyFavor extends Page implements PageWithPagination
             echo "<input name='title' type='text' class=\"pure-u-18-24\" value='$title'>";
         } else {
             echo "<input name='title' type='text' class=\"pure-u-18-24\">";
+        }
+    }
+
+    function purifyTitleInput()
+    {
+        if (!customIsEmpty($_GET['title'])) {
+            $_GET['title'] = $this->htmlPurifier->purify($_GET['title']);
         }
     }
 }

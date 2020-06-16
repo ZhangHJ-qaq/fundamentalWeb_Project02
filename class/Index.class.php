@@ -17,10 +17,10 @@ class Index extends Page
         $imageInfoList = $this->pdoAdapter->selectRows($sql);
         $this->pdoAdapter->close();
         for ($i = 0; $i <= count($imageInfoList) - 1; $i++) {
-            $imageID = $imageInfoList[$i]['ImageID'];
-            $title = $imageInfoList[$i]['Title'];
-            $description = $imageInfoList[$i]['Description'];
-            $path = $imageInfoList[$i]['PATH'];
+            $imageID = htmlspecialchars($imageInfoList[$i]['ImageID'], ENT_QUOTES);
+            $title = htmlspecialchars($imageInfoList[$i]['Title'], ENT_QUOTES);
+            $description = htmlspecialchars($imageInfoList[$i]['Description'], ENT_QUOTES);
+            $path = htmlspecialchars($imageInfoList[$i]['PATH'], ENT_QUOTES);
             echo "<div class='card pure-u-1-1 pure-u-md-1-2 pure-u-lg-1-3'>";
             echo "<a href=imageDetail.php?imageID=$imageID><img src=img/small/$path alt=$title class='thumbnail pure-u-1-2'></a>";
             echo "<h1>$title</h1>";
@@ -41,9 +41,9 @@ class Index extends Page
         $imageInfo = $this->pdoAdapter->selectRows("select Title,PATH,ImageID from travelimage order by rand() limit 1 ");
 
         //->selectRows();
-        $imageID = $imageInfo[0]['ImageID'];
-        $title = $imageInfo[0]['Title'];
-        $path = $imageInfo[0]['PATH'];
+        $imageID = htmlspecialchars($imageInfo[0]['ImageID'], ENT_QUOTES);
+        $title = htmlspecialchars($imageInfo[0]['Title'], ENT_QUOTES);
+        $path = htmlspecialchars($imageInfo[0]['PATH'], ENT_QUOTES);
         echo "<a class='pure-u-1 hasShadow' href=imageDetail.php?imageID=$imageID>";
         echo "<img src=img/medium/$path alt='$title' class='pure-u-1'>";
         echo "</a>";
