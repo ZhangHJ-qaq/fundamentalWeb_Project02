@@ -3,7 +3,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/class/Page.class.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/class/SearchRequest.class.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/class/SearchResult.class.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/class/PageWithPagination.interface.php";
-include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/htmlpurifier-4.12.0/library/HTMLPurifier.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/utilities/htmlpurifier-4.12.0/library/HTMLPurifier.auto.php";
 
 class Browser extends Page implements PageWithPagination
 {
