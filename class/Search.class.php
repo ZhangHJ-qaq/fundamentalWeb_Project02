@@ -128,7 +128,7 @@ class Search extends Page implements PageWithPagination
         echo "<label>按标题搜索</label>";
         if ($_GET['searchWay'] === 'title') {
             $titleInput = $_GET['titleInput'];
-            echo "<input type='text' name='titleInput' id='titleInput' value=$titleInput>";
+            echo "<input type='text' name='titleInput' id='titleInput' value='$titleInput'>";
         } else {
             echo "<input type='text' name='titleInput' id='titleInput'>";
         }
@@ -145,7 +145,7 @@ class Search extends Page implements PageWithPagination
         echo "<label>按内容搜索</label>";
         if ($_GET['searchWay'] === 'desc') {
             $descInput = $_GET['descInput'];
-            echo "<input type='text' name='descInput' id='descInput' value=$descInput>";
+            echo "<input type='text' name='descInput' id='descInput' value='$descInput'>";
         } else {
             echo "<input type='text' name='descInput' id='descInput'>";
         }

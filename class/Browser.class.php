@@ -193,7 +193,7 @@ class Browser extends Page implements PageWithPagination
 
     function printTitleInput()
     {
-        echo "<input type='text' class='pure-u-2-3' name='title' value={$_GET['title']}>";
+        echo "<input type='text' class='pure-u-2-3' name='title' value='{$_GET['title']}'>";
     }
 
     function purifyInput()
