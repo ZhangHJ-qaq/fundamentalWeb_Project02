@@ -51,10 +51,10 @@ class ImageDetail extends Page
     {
         if (isset($imageID)) {
             $sql = "select Title,UserName,Description,AsciiName,PATH,CountryName,ContentName,ImageID 
-                    from ((travelimage inner join traveluser on travelimage.UID = traveluser.UID) 
-                    inner join geocities on geocities.GeoNameID=travelimage.CityCode)
-                    inner join geocountries on travelimage.CountryCodeISO=geocountries.ISO 
-                    inner join geocontents on geocontents.ContentID=travelimage.ContentID
+                    from ((travelimage left join traveluser on travelimage.UID = traveluser.UID) 
+                    left join geocities on geocities.GeoNameID=travelimage.CityCode)
+                    left join geocountries on travelimage.CountryCodeISO=geocountries.ISO 
+                    left join geocontents on geocontents.ContentID=travelimage.ContentID
                     where ImageID=?";
             $this->imageInfo = $this->pdoAdapter->selectRows($sql, array($imageID));
             $this->getImage = count($this->imageInfo) === 1;

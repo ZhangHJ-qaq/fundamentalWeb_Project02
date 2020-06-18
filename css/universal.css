@@ -3,7 +3,7 @@ body {
 }
 
 header {
-    background-image: linear-gradient(lightskyblue, deepskyblue);
+    background-color: darkblue;
     font-size: 140%;
     color: white;
     padding: 10px;
@@ -33,7 +33,7 @@ header a {
 
 #headerDropdownMenu {
     position: relative;
-    background-image: linear-gradient(lightskyblue, deepskyblue);
+    background-color: darkblue;
     top: 10px;
     font-size: 80%;
     display: none;
